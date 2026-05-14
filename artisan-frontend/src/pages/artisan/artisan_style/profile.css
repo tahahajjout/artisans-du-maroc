@@ -1,0 +1,236 @@
+.artisan-card {
+    background: var(--art-white);
+    width: 100%;
+    max-width: 900px;
+    padding: 50px;
+    border-radius: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    min-height: min-content;
+    overflow: visible;
+}
+
+.card-title {
+    color: var(--art-orange);
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+/* ── Profile grid ── */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.p-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #a0a0a0;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.info-value {
+    font-size: 18px;
+    color: var(--art-text);
+    font-weight: 500;
+}
+
+.bio-section {
+    grid-column: span 2;
+    background: #fdfaf5;
+    padding: 25px;
+    border-radius: 20px;
+    border-left: 6px solid var(--art-orange);
+}
+
+.bio-text {
+    margin-top: 10px;
+    line-height: 1.6;
+    color: var(--art-text);
+}
+
+/* ── Status badge ── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.status-badge.actif {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #b8dfc4;
+}
+
+.status-badge.en_attente {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #f0d87c;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-badge.actif .status-dot { background: #28a745; }
+.status-badge.en_attente .status-dot { background: #ffc107; }
+
+.status-hint {
+    font-size: 12px;
+    color: #a0a0a0;
+    margin-top: 6px;
+    font-weight: 400;
+}
+
+/* ── Profile actions ── */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn-edit {
+    background: var(--art-orange);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    width: 250px;
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.btn-edit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+.btn-delete-link {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* ── Modal base ── */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── En attente popup ── */
+.modal-pending { max-width: 420px; }
+
+.pending-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.pending-title {
+    color: #b35935;
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.pending-text {
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.btn-pending-back {
+    padding: 12px 30px;
+    background: #b35935;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+    transition: filter 0.2s;
+}
+
+.btn-pending-back:hover { filter: brightness(1.1); }
+
+/* ── Delete modal ── */
+.modal-danger-title { color: #e74c3c; margin-bottom: 8px; }
+.modal-desc { margin: 16px 0; color: #666; line-height: 1.6; }
+.modal-error { color: red; font-size: 0.85rem; margin-top: 8px; }
+
+.art-input {
+    width: 100%;
+    padding: 15px;
+    margin: 20px 0;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.modal-actions { display: flex; gap: 15px; margin-top: 8px; }
+
+.btn-confirm {
+    flex: 1; padding: 12px;
+    background: #e74c3c;
+    color: white; border: none;
+    border-radius: 10px;
+    font-weight: bold; cursor: pointer;
+}
+
+.btn-cancel {
+    flex: 1; padding: 12px;
+    background: #eee; color: #333;
+    border: none; border-radius: 10px; cursor: pointer;
+}
+
+.logout-item {
+    margin-top: auto;
+    color: #e74c3c !important;
+    font-weight: bold;
+}

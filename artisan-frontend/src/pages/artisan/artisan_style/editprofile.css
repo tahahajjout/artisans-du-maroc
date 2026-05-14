@@ -1,0 +1,185 @@
+.edit-card {
+    background: white;
+    width: 100%;
+    max-width: 850px;
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #888;
+}
+
+.form-group input, 
+.form-group textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.edit-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-save {
+    background: var(--art-orange);
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+.artisan-sidebar .profile-img-frame {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 30px auto;
+    border-radius: 50%;
+    overflow: hidden; 
+    border: 3px solid white;
+    background-color: #eee; 
+}
+
+.artisan-sidebar .profile-img-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+.artisan-dashboard, .artisan-main {
+    background-image: none !important;
+    background-color: var(--art-bg);
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #b35935;
+    outline: none;
+}
+
+.form-group input:focus {
+    outline: none;
+}
+
+.centered-form-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.edit-container {
+    background: white;
+    width: 100%;
+    max-width: 850px;
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.form-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #b35935;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.file-upload-section {
+    background: #fdfaf5;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px dashed #e0c8b0;
+}
+
+.file-input {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-submit {
+    background: #b35935;
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background: #9a4a2a;
+}
+
+.btn-delete-account {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #888;
+    transition: border-color 0.2s;
+}
+
+.btn-delete-account:hover {
+    border-color: #b35935;
+    color: #b35935;
+}

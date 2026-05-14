@@ -1,0 +1,129 @@
+/* Container Global */
+.public-profile-container {
+    background-color: #fcfaf7;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Navbar */
+.profile-top-nav {
+    background-color: #b35935;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.back-arrow {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* --- LE SYSTÈME DE SUPERPOSITION --- */
+.hero-block {
+    position: relative;
+    width: 100%;
+    height: 300px; /* Hauteur totale incluant le dépassement de l'avatar */
+    margin-bottom: 20px;
+}
+
+.banner-frame {
+    width: 100%;
+    height: 220px; /* Hauteur de l'image de fond */
+    overflow: hidden;
+}
+
+.banner-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.8);
+}
+
+.avatar-overlap {
+    position: absolute;
+    bottom: 0; /* Aligné sur le bas du bloc hero */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.avatar-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 6px solid white; /* Le bord blanc crée la séparation propre */
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    background-color: white;
+}
+
+/* --- DÉTAILS ET TEXTE --- */
+.profile-details {
+    padding: 0 20px;
+    text-align: center;
+}
+
+.artisan-name {
+    margin: 10px 0 5px;
+    color: #2d2d2d;
+    font-size: 26px;
+}
+
+.artisan-location {
+    color: #b35935;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.bio-bubble {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    max-width: 500px;
+    margin: 0 auto 30px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* BOUTONS D'ACTION */
+.profile-actions-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.action-btn {
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.contact-btn {
+    background-color: #f1e4df;
+    color: #b35935;
+}
+
+.products-btn {
+    background-color: #b35935;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}

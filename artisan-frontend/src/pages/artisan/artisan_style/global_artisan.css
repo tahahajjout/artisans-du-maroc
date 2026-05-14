@@ -1,0 +1,97 @@
+:root {
+    --art-orange: #b35935;
+    --art-bg: #f9f7f2;
+    --art-white: #ffffff;
+    --art-text: #333;
+    --art-danger: #e74c3c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Empêche le bug de mosaïque sur toutes les pages */
+body, .artisan-dashboard {
+    background-color: var(--art-bg) !important;
+    background-image: none !important; 
+}
+
+.artisan-dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR : Fixe et robuste */
+.artisan-sidebar {
+    width: 260px;
+    background-color: var(--art-orange);
+    color: white;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.nav-item {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background: var(--art-white);
+    color: var(--art-orange) !important;
+    font-weight: bold;
+}
+
+/* MAIN CONTENT : Aligné pour ne pas passer sous la sidebar */
+.artisan-main {
+    flex: 1;
+    margin-left: 260px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: center; 
+    min-height: 100vh; 
+}
+
+/* Style de la photo de profil dans la sidebar */
+.sidebar-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.artisan-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 150px); /* Ajuste selon la taille de ton image de profil */
+}
+
+.logout-item {
+    margin-top: auto !important; /* Pousse le bouton en bas */
+    padding-top: 20px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Ligne de séparation discrète */
+    color: rgba(255, 255, 255, 0.8) !important; /* Blanc doux (légèrement transparent) */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-item:hover {
+    color: #ffffff !important; /* Devient blanc pur au survol */
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Léger fond brillant */
+    transform: translateX(5px); /* Petit effet de mouvement vers la droite */
+}
