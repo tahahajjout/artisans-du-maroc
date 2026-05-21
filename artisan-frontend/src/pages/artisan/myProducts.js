@@ -71,7 +71,8 @@ function MyProducts() {
     const sortedProducts = [...products].sort((a, b) => {
         if (sortBy === 'nom') return a.title.localeCompare(b.title);
         if (sortBy === 'rating') return b.average_rating - a.average_rating;
-        return 0;
+        if (sortBy === 'visites') return (b.visit_count || 0) - (a.visit_count || 0);
+        return 0;   
     });
 
     return (
@@ -95,11 +96,11 @@ function MyProducts() {
 
                 <div className="sort-bar">
                     <span className="sort-label">Trier par :</span>
-                    {['none', 'nom', 'rating'].map(val => (
+                    {['none', 'nom', 'rating', 'visites'].map(val => (
                         <button key={val}
                             className={`sort-btn ${sortBy === val ? 'active' : ''}`}
                             onClick={() => setSortBy(val)}>
-                            {val === 'none' ? 'Par défaut' : val === 'nom' ? 'Nom' : '★ Note'}
+                            {val === 'none' ? 'Par défaut' : val === 'nom' ? 'Nom' : val === 'rating' ? '★ Note' : '👁 Visites'}
                         </button>
                     ))}
                 </div>
@@ -144,6 +145,9 @@ function MyProducts() {
                                         <span className="rating-score">
                                             {Number(p.average_rating).toFixed(1)} ({p.rating_count} avis)
                                         </span>
+                                    </div>
+                                    <div className="product-visits">
+                                        👁 {p.visit_count || 0} vue{p.visit_count !== 1 ? 's' : ''}
                                     </div>
                                 </div>
                                 <div className="product-actions">

@@ -64,16 +64,17 @@ exports.getArtisanProducts = async (req, res) => {
         const [rows] = await db.execute(`
             SELECT p.*,
                    IFNULL(AVG(r.stars), 0) AS average_rating,
-                   COUNT(r.id) AS rating_count
+                   COUNT(DISTINCT r.id) AS rating_count,
+                   COUNT(DISTINCT pv.id) AS visit_count
             FROM products p
             LEFT JOIN ratings r ON r.product_id = p.id
+            LEFT JOIN product_visits pv ON pv.product_id = p.id
             WHERE p.artisan_id = ?
             GROUP BY p.id
             ORDER BY p.id DESC
         `, [artisanId]);
         res.status(200).json(rows);
     } catch (error) {
-        console.error("Erreur récupération produits :", error);
         res.status(500).json({ message: "Impossible de charger vos produits." });
     }
 };

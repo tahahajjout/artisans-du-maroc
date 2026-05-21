@@ -311,3 +311,26 @@ body, .artisan-dashboard {
 .admin-status-action-actif  { background: #d4edda; color: #155724; }
 .admin-status-action-bloque { background: #f8d7da; color: #721c24; }
 .admin-status-action-attente{ background: #fff3cd; color: #856404; }
+/*filter*/
+.admin-filter-select {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #e6ddd2;
+    background: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    color: #4a3b2a;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23b85c28' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+}
+
+.admin-filter-select:focus {
+    border-color: #b35935;
+}

@@ -164,27 +164,28 @@ function AdminDashboard() {
 
                             {/* Filters */}
                             <div className="admin-filter-bar">
-                                <span className="admin-filter-label">Note :</span>
-                                {['all', '4', '3', '2', '1'].map(val => (
-                                    <button key={val}
-                                        className={`admin-filter-btn ${ratingFilter === val ? 'active' : ''}`}
-                                        onClick={() => setRatingFilter(val)}>
-                                        {val === 'all' ? 'Tous' : `${val}★+`}
-                                    </button>
-                                ))}
-                                <span className="admin-filter-label" style={{ marginLeft: '14px' }}>Statut :</span>
-                                {[
-                                    { val: 'all',        label: 'Tous' },
-                                    { val: 'actif',      label: '✅ Actif' },
-                                    { val: 'en_attente', label: '⏳ En attente' },
-                                    { val: 'bloque',     label: '🚫 Bloqué' }
-                                ].map(s => (
-                                    <button key={s.val}
-                                        className={`admin-filter-btn ${statusFilter === s.val ? 'active' : ''}`}
-                                        onClick={() => setStatusFilter(s.val)}>
-                                        {s.label}
-                                    </button>
-                                ))}
+                                <label className="admin-filter-label">Note :</label>
+                                <select
+                                    className="admin-filter-select"
+                                    value={ratingFilter}
+                                    onChange={e => setRatingFilter(e.target.value)}>
+                                    <option value="all">Tous</option>
+                                    <option value="4">★ 4 et +</option>
+                                    <option value="3">★ 3 et +</option>
+                                    <option value="2">★ 2 et +</option>
+                                    <option value="1">★ 1 et +</option>
+                                </select>
+
+                                <label className="admin-filter-label" style={{ marginLeft: '20px' }}>Statut :</label>
+                                <select
+                                    className="admin-filter-select"
+                                    value={statusFilter}
+                                    onChange={e => setStatusFilter(e.target.value)}>
+                                    <option value="all">Tous</option>
+                                    <option value="actif">✅ Actif</option>
+                                    <option value="en_attente">⏳ En attente</option>
+                                    <option value="bloque">🚫 Bloqué</option>
+                                </select>
                             </div>
 
                             <div className="admin-stats-badge">
