@@ -57,7 +57,7 @@ const sendStatusEmail = async (artisan, status) => {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
         service: 'gmail',
-        auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS }
+        auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy   ' }
     });
 
     const isBlocked = status === 'bloque';
