@@ -52,8 +52,37 @@ exports.deleteArtisan = async (req, res) => {
   }
 };
 
-
 const sendStatusEmail = async (artisan, status) => {
+    const axios = require('axios');
+    const isBlocked = status === 'bloque';
+
+    await axios.post('https://api.brevo.com/v3/smtp/email', {
+        sender: { name: 'Artisans du Maroc', email: 'artisansdumarocc@gmail.com' },
+        to: [{ email: artisan.email, name: artisan.full_name }],
+        subject: isBlocked
+            ? 'Votre compte a été bloqué — Artisans du Maroc'
+            : 'Votre compte est activé — Artisans du Maroc',
+        htmlContent: `
+            <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #eee;border-radius:12px;">
+                <h2 style="color:#b95d2b;">Artisans du Maroc</h2>
+                <p>Bonjour <strong>${artisan.full_name}</strong>,</p>
+                ${isBlocked
+                    ? `<p>Votre compte a été <strong style="color:#e74c3c;">bloqué</strong> par l'administrateur. Vous ne pouvez plus accéder à votre espace artisan.</p>
+                       <p>Pour toute réclamation, contactez notre support.</p>`
+                    : `<p>Votre compte a été <strong style="color:#28a745;">activé</strong>. Vous êtes maintenant visible publiquement sur la plateforme.</p>`
+                }
+                <p style="color:#888;font-size:13px;margin-top:24px;">Cordialement,<br/>L'équipe Artisans du Maroc</p>
+            </div>
+        `
+    }, {
+        headers: {
+            'api-key': process.env.BREVO_API_KEY,
+            'Content-Type': 'application/json'
+        }
+    });
+};
+
+/*//const sendStatusEmail = async (artisan, status) => {
     /*const nodemailer = require('nodemailer');
      const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -61,7 +90,7 @@ const sendStatusEmail = async (artisan, status) => {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS
         }
-    }); */
+    }); 
         const transporter = nodemailer.createTransport({
         host: 'smtp-relay.brevo.com',
         port: 465,
@@ -93,7 +122,7 @@ const sendStatusEmail = async (artisan, status) => {
             </div>
         `
     });
-};
+};*/
 
 exports.updateArtisanStatus = async (req, res) => {
     const { id } = req.params;
