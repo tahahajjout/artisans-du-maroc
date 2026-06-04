@@ -1,6 +1,6 @@
 .footer {
   background: #dbc6a5;
-  border-top: 1px solid #e6ddd2;
+  border-top: 1px solid #c8b49a;
   font-family: 'Montserrat', sans-serif;
   margin-top: 80px;
 }
@@ -8,74 +8,84 @@
 .footer-inner {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 16px 8%;
+  align-items: flex-start;
+  padding: 40px 8%;
   gap: 40px;
-  flex-wrap: wrap;
+}
+
+/* ── Left brand ── */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-logo-image {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
 }
 
 .footer-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  letter-spacing: 3px; 
+  font-size: 1.15rem;
+  letter-spacing: 2px;
   color: #b85c28;
-  display: block;
-  margin-bottom: 6px;
   text-transform: uppercase;
+  font-weight: 700;
 }
 
-.footer-brand p {
+.footer-tagline {
   font-size: 0.78rem;
-  color: #8a7a68;
+  color: #3a2e24;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+/* ── Center contact ── */
+.footer-center {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Right currency ── */
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Shared section title ── */
+.footer-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #3a2e24;
   margin: 0;
 }
 
-.footer-links {
-  display: flex;
-  gap: 25px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.footer-links a {
-  font-size: 0.9rem;
-  color: #000000;
+.footer-email {
+  font-size: 0.85rem;
+  color: #1a1210;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   transition: color 0.2s;
-  letter-spacing: 0.3px;
 }
-
-.footer-links a:hover {
+.footer-email:hover {
   color: #b85c28;
 }
 
-.footer-bottom {
-  text-align: center;
-  padding: 14px;
-  font-size: 1rem;
-  color: #000000;
-  border-top: 1px solid #e6ddd2;
-  letter-spacing: 0.3px;
-}
-
 /* ── Currency selector ── */
-.footer-currency {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.footer-currency label {
-  font-size: 0.72rem;
-  color: #8a7a68;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-}
-
 .currency-select {
-  padding: 7px 14px;
+  padding: 7px 32px 7px 14px;
   border-radius: 20px;
   border: 1.5px solid #c8b49a;
   background: #f7f0e6;
@@ -84,20 +94,23 @@
   color: #4a3b2a;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s;
   appearance: none;
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23b85c28' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  padding-right: 32px;
+  background-color: #f7f0e6;
 }
+.currency-select:focus { border-color: #b85c28; }
+.currency-select:hover { border-color: #b85c28; }
 
-.currency-select:focus {
-  border-color: #b85c28;
-  background-color: #fff;
-}
-
-.currency-select:hover {
-  border-color: #b85c28;
+/* ── Bottom bar ── */
+.footer-bottom {
+  text-align: center;
+  padding: 14px;
+  font-size: 0.78rem;
+  color: #8a7a68;
+  border-top: 1px solid #c8b49a;
+  letter-spacing: 0.3px;
 }

@@ -2,6 +2,7 @@
 .image-preview-wrapper {
     width: 100%;
     height: 250px;
+    max-height: 250px;
     border: 2px dashed #ccc;
     border-radius: 15px;
     margin-bottom: 20px;

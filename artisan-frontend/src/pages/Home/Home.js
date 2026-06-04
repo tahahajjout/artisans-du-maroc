@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './Home.css';
 import Footer from '../../components/Footer';
+import logoImg from '../../logo.png';
 
 const categoryImages = {
     'tapis': 'https://images.unsplash.com/photo-1576016770956-debb63d92058?auto=format&fit=crop&q=80&w=400',
@@ -102,9 +103,10 @@ function Home() {
     return (
         <div className="App">
             <header className="header-main">
+                <img src={logoImg} alt="Logo Artisans du Maroc" className="header-logo-img" />  
                 <h1 className="logo">ARTISANS DU MAROC</h1>
-                <span className="status-badge">{user ? user.full_name.toUpperCase() : 'VISITEUR'}</span>
                 <div className="menu-wrap">
+                    <span className="status-badge">{user ? user.full_name.toUpperCase() : 'VISITEUR'}</span>
                     <button className="menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</button>
                     {isMenuOpen && (
                         <div className="dropdown-menu">
@@ -336,6 +338,23 @@ function Home() {
                             )}
 
                             <p className="reco-popup-artisan-name">🧑‍🎨 {recoPopup.artisan_name}</p>
+                            {recoPopup.comments && recoPopup.comments.length > 0 && (
+                            <div className="reco-popup-reviews">
+                                <p className="reco-popup-reviews-title">
+                                    Avis clients ({recoPopup.comments.length})
+                                </p>
+                                {recoPopup.comments.map((c, i) => (
+                                    <div key={i} className="reco-review-item">
+                                        <div className="reco-review-stars">
+                                            {'★'.repeat(c.stars)}{'☆'.repeat(5 - c.stars)}
+                                        </div>
+                                        {c.comment && (
+                                            <p className="reco-review-comment">{c.comment}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                             <button className="reco-popup-contact"
                                 onClick={() => { closeRecoPopup(); navigate(`/artisan/${recoPopup.artisan_id}/products`); }}>

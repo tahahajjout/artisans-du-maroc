@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import './Footer.css';
 import { useCurrency } from './CurrencyContext';
+import logoImg from '../logo.png';
 
 export default function Footer() {
   const { currency, setCurrency } = useCurrency();
@@ -10,22 +10,26 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
 
+        {/* Left — brand */}
         <div className="footer-brand">
-          <span className="footer-logo">ARTISANS DU MAROC</span>
-          <p>L'artisanat marocain authentique</p>
+          <div className="footer-brand-row">
+            <img src={logoImg} alt="Logo" className="footer-logo-image" />
+            <span className="footer-logo">ARTISANS DU MAROC</span>
+          </div>
+          <p className="footer-tagline">L'artisanat marocain authentique</p>
         </div>
 
-        <div className="footer-links">
-          <Link to="/category/Tapis">Tapis</Link>
-          <Link to="/category/Céramique">Céramique</Link>
-          <Link to="/category/Cuir">Cuir</Link>
-          <Link to="/category/Bijoux">Bijoux</Link>
-          <Link to="/artisan-space">Espace artisan</Link>
-          <Link to="/login">Connexion</Link>
+        {/* Center — contact */}
+        <div className="footer-center">
+          <p className="footer-section-title">Contact</p>
+          <a href="mailto:contact@artisansdumaroc.ma" className="footer-email">
+            artisansdumarocc@gmail.com
+          </a>
         </div>
 
-        <div className="footer-currency">
-          <label>💱 Devise</label>
+        {/* Right — currency */}
+        <div className="footer-right">
+          <p className="footer-section-title">Devise</p>
           <select
             className="currency-select"
             value={currency}

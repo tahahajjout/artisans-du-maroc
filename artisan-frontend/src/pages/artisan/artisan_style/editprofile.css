@@ -183,3 +183,24 @@
     border-color: #b35935;
     color: #b35935;
 }
+
+.upload-section {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    padding: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.upload-section img {
+    max-width: 100%;
+    max-height: 140px;
+    object-fit: contain;
+    border-radius: 8px;
+}

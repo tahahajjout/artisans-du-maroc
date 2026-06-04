@@ -16,27 +16,27 @@ function ArtisanProducts() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [products, setProducts]         = useState([]);
-    const [artisanName, setArtisanName]   = useState('');
-    const [loading, setLoading]           = useState(true);
-    const [sort, setSort]                 = useState('rating');
-    const [category, setCategory]         = useState('');
-    const [showFilters, setShowFilters]   = useState(false);
-    const [ratingModal, setRatingModal]   = useState(null);
-    const [stars, setStars]               = useState(0);
-    const [hoverStar, setHoverStar]       = useState(0);
-    const [comment, setComment]           = useState('');
-    const [ratingMsg, setRatingMsg]       = useState('');
-    const [submitting, setSubmitting]     = useState(false);
-    // Gallery
-    const [galleryModal, setGalleryModal] = useState(null); // product object
-    const [galleryLightbox, setGalleryLightbox] = useState(null); // { url, type }
+    const [products, setProducts]               = useState([]);
+    const [artisanName, setArtisanName]         = useState('');
+    const [loading, setLoading]                 = useState(true);
+    const [sort, setSort]                       = useState('rating');
+    const [category, setCategory]               = useState('');
+    const [showFilters, setShowFilters]         = useState(false);
+    const [ratingModal, setRatingModal]         = useState(null);
+    const [stars, setStars]                     = useState(0);
+    const [hoverStar, setHoverStar]             = useState(0);
+    const [comment, setComment]                 = useState('');
+    const [ratingMsg, setRatingMsg]             = useState('');
+    const [submitting, setSubmitting]           = useState(false);
+    const [commentsModal, setCommentsModal]     = useState(null);
+    const [galleryModal, setGalleryModal]       = useState(null);
+    const [galleryLightbox, setGalleryLightbox] = useState(null);
 
     const user = JSON.parse(localStorage.getItem('user'));
     const { convert } = useCurrency();
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/products/artisan/${id}/public`)
+        axios.get(`http://localhost:5000/api/products/artisan/${id}/public`)
             .then(res => {
                 setProducts(res.data);
                 if (res.data.length > 0) setArtisanName(res.data[0].artisan_name);
@@ -62,9 +62,18 @@ function ArtisanProducts() {
         return list;
     }, [products, sort, category]);
 
-    const whatsappLink = (phone) => {
-        const clean = phone?.replace(/\s/g, '').replace(/^0/, '212');
-        return `https://wa.me/${clean}`;
+    const whatsappLink = (phone, productTitle) => {
+        if (!phone) return '#';
+        let clean = phone.replace(/\s/g, '').replace(/\D/g, '');
+        if (clean.startsWith('212')) {
+            // already has country code
+        } else if (clean.startsWith('0')) {
+            clean = '212' + clean.slice(1);
+        } else {
+            clean = '212' + clean;
+        }
+        const message = encodeURIComponent(`Bonjour, je suis intéressé par le produit : ${productTitle}`);
+        return `https://wa.me/${clean}?text=${message}`;
     };
 
     const openRating = (product) => {
@@ -76,7 +85,7 @@ function ArtisanProducts() {
         if (stars === 0) { setRatingMsg("Veuillez sélectionner une note."); return; }
         setSubmitting(true);
         try {
-            await axios.post('${process.env.REACT_APP_API_URL}/api/products/rate', {
+            await axios.post('http://localhost:5000/api/products/rate', {
                 product_id: ratingModal.id,
                 client_id: user.id,
                 stars,
@@ -94,6 +103,11 @@ function ArtisanProducts() {
     const openGallery = (product) => {
         setGalleryModal(product);
         setGalleryLightbox(null);
+    };
+
+    const openComments = (e, product) => {
+        e.stopPropagation();
+        setCommentsModal({ title: product.title, comments: product.comments || [] });
     };
 
     return (
@@ -160,7 +174,7 @@ function ArtisanProducts() {
                             {/* Image — click opens gallery */}
                             <div className="ap-card-img" onClick={() => openGallery(p)}>
                                 <img
-                                    src={`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`}
+                                    src={`http://localhost:5000/uploads/${p.image_url}`}
                                     alt={p.title}
                                     onError={e => e.target.src = 'https://via.placeholder.com/120'}
                                 />
@@ -179,7 +193,6 @@ function ArtisanProducts() {
                                 <h3 className="ap-card-title">{p.title}</h3>
                                 {p.description && <p className="ap-card-desc">{p.description}</p>}
 
-                                {/* ── New fields ── */}
                                 <div className="ap-card-details">
                                     {p.couleur && (
                                         <span className="ap-detail-tag">🎨 {p.couleur}</span>
@@ -193,34 +206,39 @@ function ArtisanProducts() {
 
                                 <p className="ap-card-price">{convert(p.price)}</p>
 
-                                <a
-                                    href={whatsappLink(p.phone_number)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="ap-whatsapp-btn"
-                                    onClick={() => {
-                                        const u = JSON.parse(localStorage.getItem('user'));
-                                        axios.post(`${process.env.REACT_APP_API_URL}/api/products/${p.id}/visit`, {
-                                            client_id: u ? u.id : null
-                                        });
-                                    }}
-                                >
-                                    <svg viewBox="0 0 24 24" fill="white" width="16" height="16">
-                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                                        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.523 5.847L0 24l6.335-1.507A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.893 9.893 0 01-5.048-1.383l-.361-.214-3.762.895.952-3.671-.235-.374A9.878 9.878 0 012.107 12C2.107 6.58 6.58 2.107 12 2.107S21.894 6.58 21.894 12 17.42 21.894 12 21.894z"/>
-                                    </svg>
-                                    Commander via WhatsApp
-                                </a>
-                                <button className="ap-rate-btn" onClick={() => openRating(p)}>
-                                    ★ Noter ce produit
-                                </button>
+                                <div className="ap-card-actions">
+                                    <a
+                                        href={whatsappLink(p.phone_number, p.title)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ap-whatsapp-btn"
+                                        onClick={() => {
+                                            const u = JSON.parse(localStorage.getItem('user'));
+                                            axios.post(`http://localhost:5000/api/products/${p.id}/visit`, {
+                                                client_id: u ? u.id : null
+                                            });
+                                        }}
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="white" width="14" height="14">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.523 5.847L0 24l6.335-1.507A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.893 9.893 0 01-5.048-1.383l-.361-.214-3.762.895.952-3.671-.235-.374A9.878 9.878 0 012.107 12C2.107 6.58 6.58 2.107 12 2.107S21.894 6.58 21.894 12 17.42 21.894 12 21.894z"/>
+                                        </svg>
+                                        WhatsApp
+                                    </a>
+                                    <button className="ap-rate-btn" onClick={() => openRating(p)}>
+                                        ★ Noter
+                                    </button>
+                                    <button className="ap-comments-btn" onClick={e => openComments(e, p)}>
+                                        💬 Avis
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             )}
 
-            {/* ── Guest login prompt ── */}
+            {/* ── Guest login ── */}
             {ratingModal && !user && (
                 <div className="ap-modal-overlay" onClick={() => setRatingModal(null)}>
                     <div className="ap-modal" onClick={e => e.stopPropagation()}>
@@ -278,29 +296,26 @@ function ArtisanProducts() {
                         <h3 className="ap-modal-title">🖼 Galerie</h3>
                         <p className="ap-modal-product">{galleryModal.title}</p>
 
-                        {/* Main image */}
                         <div style={{ marginBottom: '14px' }}>
                             <p className="ap-gallery-section-label">Image principale</p>
                             <img
-                                src={`${process.env.REACT_APP_API_URL}/uploads/${galleryModal.image_url}`}
+                                src={`http://localhost:5000/uploads/${galleryModal.image_url}`}
                                 alt="main"
                                 className="ap-gallery-main-img"
                                 onClick={() => setGalleryLightbox({
-                                    url: `${process.env.REACT_APP_API_URL}/uploads/${galleryModal.image_url}`,
+                                    url: `http://localhost:5000/uploads/${galleryModal.image_url}`,
                                     type: 'image'
                                 })}
                                 onError={e => e.target.src = 'https://via.placeholder.com/400'}
                             />
                         </div>
 
-                        {/* Details */}
-                       <div className="ap-gallery-details"> 
+                        <div className="ap-gallery-details">
                             <span className="ap-detail-tag">🎨 {galleryModal.couleur || 'Non spécifié'}</span>
                             <span className="ap-detail-tag">↕ H: {galleryModal.hauteur || 'Non spécifié'}</span>
                             <span className="ap-detail-tag">↔ L: {galleryModal.largeur || 'Non spécifié'}</span>
                         </div>
 
-                        {/* Gallery items */}
                         {galleryModal.gallery && galleryModal.gallery.length > 0 ? (
                             <>
                                 <p className="ap-gallery-section-label" style={{ marginTop: '14px' }}>
@@ -310,13 +325,13 @@ function ArtisanProducts() {
                                     {galleryModal.gallery.map(g => (
                                         <div key={g.id} className="ap-gallery-item"
                                             onClick={() => setGalleryLightbox({
-                                                url: `${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`,
+                                                url: `http://localhost:5000/uploads/${g.file_url}`,
                                                 type: g.file_type
                                             })}>
                                             {g.file_type === 'video'
-                                                ? <video src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
+                                                ? <video src={`http://localhost:5000/uploads/${g.file_url}`}
                                                     className="ap-gallery-thumb" muted />
-                                                : <img src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
+                                                : <img src={`http://localhost:5000/uploads/${g.file_url}`}
                                                     alt="gallery" className="ap-gallery-thumb" />}
                                             <span className="ap-gallery-badge">
                                                 {g.file_type === 'video' ? '🎥' : '🔍'}
@@ -346,6 +361,33 @@ function ArtisanProducts() {
                             onClick={e => e.stopPropagation()}
                             style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: '12px', objectFit: 'contain' }} />
                     }
+                </div>
+            )}
+
+            {/* ── Comments Modal ── */}
+            {commentsModal && (
+                <div className="ap-modal-overlay" onClick={() => setCommentsModal(null)}>
+                    <div className="ap-modal" onClick={e => e.stopPropagation()}>
+                        <button className="ap-modal-close" onClick={() => setCommentsModal(null)}>✕</button>
+                        <h3 className="ap-modal-title">💬 Avis clients</h3>
+                        <p className="ap-modal-product">{commentsModal.title}</p>
+                        {commentsModal.comments.length === 0 ? (
+                            <p className="ap-comments-empty">Aucun avis pour ce produit.</p>
+                        ) : (
+                            <div className="ap-comments-list">
+                                {commentsModal.comments.map((c, i) => (
+                                    <div key={i} className="ap-comment-item">
+                                        <div className="ap-comment-stars">
+                                            {'★'.repeat(c.stars)}{'☆'.repeat(5 - c.stars)}
+                                        </div>
+                                        {c.comment && (
+                                            <p className="ap-comment-text">{c.comment}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

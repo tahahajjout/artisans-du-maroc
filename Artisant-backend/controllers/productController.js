@@ -246,6 +246,12 @@ exports.getArtisanPublicProducts = async (req, res) => {
                 [p.id]
             );
             p.gallery = gallery;
+
+             const [comments] = await db.execute(
+                'SELECT stars, comment FROM ratings WHERE product_id = ? ORDER BY id DESC',
+                [p.id]
+    );
+    p.comments = comments;
         }
 
         res.json(rows);
@@ -323,6 +329,17 @@ exports.getRecommendations = async (req, res) => {
         }
         return products;
     };
+  // Helper to attach comments to a list of products
+    const attachComments = async (products) => {
+    for (const p of products) {
+        const [comments] = await db.execute(
+            'SELECT stars, comment FROM ratings WHERE product_id = ? ORDER BY id DESC',
+            [p.id]
+        );
+        p.comments = comments;
+    }
+    return products;
+};
 
     const generalQuery = `
         SELECT p.id, p.title, p.price, p.image_url,
@@ -345,6 +362,7 @@ exports.getRecommendations = async (req, res) => {
         if (clientId === 'guest') {
             const [rows] = await db.execute(generalQuery);
             await attachGallery(rows);
+            await attachComments(rows);
             return res.json({ type: 'general', products: rows });
         }
 
@@ -362,6 +380,7 @@ exports.getRecommendations = async (req, res) => {
         if (catVisits.length === 0) {
             const [rows] = await db.execute(generalQuery);
             await attachGallery(rows);
+            await attachComments(rows);
             return res.json({ type: 'general', products: rows });
         }
 
@@ -393,13 +412,13 @@ exports.getRecommendations = async (req, res) => {
         if (take1 < 10) take2 = Math.min(cat2Products.length, 16 - take1);
         if (take2 < 6)  take1 = Math.min(cat1Products.length, 16 - take2);
 
-        let allProducts = [...cat1Products.slice(0, take1), ...cat2Products.slice(0, take2)];
-        const usedIds = new Set(allProducts.map(p => p.id));
+        let allProducts = [...cat1Products.slice(0, take1), ...cat2Products.slice(0, take2)]; // les ... permettent de fusionner les tableaux sans créer de sous-tableau
+        const usedIds = new Set(allProducts.map(p => p.id)); // on a utilise set pour éviter les doublons pour la requete de remplissage
 
         const remaining = 16 - allProducts.length;
         if (remaining > 0) {
-            const excludedIds    = [...usedIds].join(',') || '0';
-            const excludedCatIds = catVisits.map(c => c.category_id).join(',') || '0';
+            const excludedIds    = [...usedIds].join(',') || '0'; // si usedIds est vide, on met '0' pour éviter une erreur SQL
+            const excludedCatIds = catVisits.map(c => c.category_id).join(',') || '0';// exclure id des catégories déjà utilisées //join est pour chaine pour sql
             const [fillRows] = await db.execute(`
                 SELECT p.id, p.title, p.price, p.image_url,
                     p.hauteur, p.largeur, p.couleur, p.description,
@@ -423,6 +442,7 @@ exports.getRecommendations = async (req, res) => {
         }
 
         await attachGallery(allProducts);
+        await attachComments(allProducts);
 
         return res.json({
             type: 'personalized',

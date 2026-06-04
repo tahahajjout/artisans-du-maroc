@@ -193,10 +193,12 @@
 .ap-card-img {
     width: 120px;
     min-width: 120px;
-    height: 140px;
+    height: 160px;
     overflow: hidden;
     background: #f5ede3;
     flex-shrink: 0;
+    position: relative;
+    cursor: zoom-in;
 }
 
 .ap-card-img img {
@@ -206,9 +208,24 @@
     display: block;
 }
 
+.ap-img-zoom {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.45);
+    color: white;
+    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+.ap-card-img:hover .ap-img-zoom { opacity: 1; }
+
 /* ── Card body ── */
 .ap-card-body {
-    padding: 14px 14px 14px 16px;
+    padding: 12px 14px 12px 16px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -240,7 +257,7 @@
 }
 
 .ap-card-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: #2c1a0e;
     line-height: 1.3;
@@ -248,8 +265,8 @@
 }
 
 .ap-card-desc {
-    font-size: 12px;
-    color: #888;
+    font-size: 13px;
+    color: #272727;
     line-height: 1.4;
     margin: 0;
     display: -webkit-box;
@@ -259,28 +276,90 @@
 }
 
 .ap-card-price {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 800;
     color: #b35935;
     margin: 0;
 }
 
-/* ── WhatsApp button ── */
+/* ── Details tags ── */
+.ap-card-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 2px 0;
+}
+
+.ap-detail-tag {
+    background: #fdf3ec;
+    color: #b35935;
+    border: 1px solid #f0d4c0;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* ── Card actions ── */
+.ap-card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
 .ap-whatsapp-btn {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 9px 14px;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 8px;
     background: #25D366;
     color: white;
     text-decoration: none;
     border-radius: 10px;
     font-weight: 700;
-    font-size: 12px;
+    font-size: 11px;
     transition: background 0.2s;
-    justify-content: center;
 }
 .ap-whatsapp-btn:hover { background: #1da851; }
+
+.ap-rate-btn {
+    flex: 1;
+    padding: 7px 8px;
+    background: white;
+    color: #b35935;
+    border: 1.5px solid #b35935;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    text-align: center;
+}
+.ap-rate-btn:hover {
+    background: #b35935;
+    color: white;
+}
+
+.ap-comments-btn {
+    flex: 1;
+    padding: 7px 8px;
+    background: white;
+    color: #555;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    text-align: center;
+}
+.ap-comments-btn:hover {
+    background: #f5ede3;
+    color: #b35935;
+    border-color: #b35935;
+}
 
 /* ── States ── */
 .ap-loading, .ap-empty {
@@ -288,30 +367,6 @@
     color: #aaa;
     padding: 60px 20px;
     font-size: 15px;
-}
-
-/* ── Image zoom hint ── */
-.ap-card-img {
-    position: relative;
-    cursor: zoom-in;
-}
-
-.ap-img-zoom {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    background: rgba(0,0,0,0.45);
-    color: white;
-    font-size: 12px;
-    padding: 3px 6px;
-    border-radius: 6px;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-}
-
-.ap-card-img:hover .ap-img-zoom {
-    opacity: 1;
 }
 
 /* ── Lightbox ── */
@@ -331,6 +386,11 @@
 @keyframes fadeIn {
     from { opacity: 0; }
     to   { opacity: 1; }
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
 }
 
 .ap-lightbox img {
@@ -360,25 +420,6 @@
     transition: background 0.2s;
 }
 .ap-lightbox-close:hover { background: rgba(255,255,255,0.3); }
-
-/* ── Noter button ── */
-.ap-rate-btn {
-    width: 100%;
-    padding: 8px;
-    margin-top: 6px;
-    background: white;
-    color: #b35935;
-    border: 1.5px solid #b35935;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-}
-.ap-rate-btn:hover {
-    background: #b35935;
-    color: white;
-}
 
 /* ── Modal overlay ── */
 .ap-modal-overlay {
@@ -448,7 +489,6 @@
     user-select: none;
     line-height: 1;
 }
-
 .ap-star.filled { color: #f4a733; }
 .ap-star:hover  { transform: scale(1.15); }
 
@@ -461,7 +501,7 @@
     margin-bottom: 16px;
 }
 
-/* ── Comment ── */
+/* ── Comment input ── */
 .ap-comment-input {
     width: 100%;
     padding: 12px;
@@ -473,6 +513,7 @@
     outline: none;
     transition: border-color 0.2s;
     color: #333;
+    box-sizing: border-box;
 }
 .ap-comment-input:focus { border-color: #b35935; }
 
@@ -540,29 +581,13 @@
 }
 .ap-login-link:hover { background: #9a4a28; }
 
-/* Details tags (couleur, dimensions) */
-.ap-card-details {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 6px 0;
-}
-.ap-detail-tag {
-    background: #fdf3ec;
-    color: #b35935;
-    border: 1px solid #f0d4c0;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-/* Gallery modal */
+/* ── Gallery modal ── */
 .ap-gallery-modal {
     max-width: 560px;
     max-height: 85vh;
     overflow-y: auto;
 }
+
 .ap-gallery-section-label {
     font-size: 11px;
     text-transform: uppercase;
@@ -570,6 +595,7 @@
     color: #aaa;
     margin-bottom: 8px;
 }
+
 .ap-gallery-main-img {
     width: 100%;
     max-height: 220px;
@@ -593,6 +619,7 @@
     gap: 8px;
     margin-top: 8px;
 }
+
 .ap-gallery-item {
     position: relative;
     aspect-ratio: 1;
@@ -600,14 +627,51 @@
     overflow: hidden;
     cursor: zoom-in;
 }
+
 .ap-gallery-thumb {
     width: 100%; height: 100%;
     object-fit: cover; display: block;
     transition: transform 0.2s;
 }
 .ap-gallery-item:hover .ap-gallery-thumb { transform: scale(1.05); }
+
 .ap-gallery-badge {
     position: absolute;
     bottom: 4px; left: 4px;
     font-size: 12px;
+}
+
+/* ── Comments modal ── */
+.ap-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.ap-comment-item {
+    background: #fdfaf5;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.ap-comment-stars {
+    color: #f4a733;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.ap-comment-text {
+    font-size: 13px;
+    color: #000000;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.ap-comments-empty {
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    padding: 20px 0;
 }
