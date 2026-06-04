@@ -57,13 +57,13 @@ const sendStatusEmail = async (artisan, status) => {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
         service: 'gmail',
-        auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy   ' }
+        auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy' }
     });
 
     const isBlocked = status === 'bloque';
 
     await transporter.sendMail({
-        from: '"Artisans du Maroc" <VOTRE_EMAIL@gmail.com>',
+        from: '"Artisans du Maroc" <artisansdumarocc@gmail.com>',
         to: artisan.email,
         subject: isBlocked
             ? 'Votre compte a été bloqué — Artisans du Maroc'
