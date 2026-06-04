@@ -56,18 +56,19 @@ exports.deleteArtisan = async (req, res) => {
 const sendStatusEmail = async (artisan, status) => {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
+        host: 'smtp-relay.brevo.com',
+        port: 587,
         secure: false,
-        family: 4,
-        auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy' },
-        tls: { rejectUnauthorized: false }
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
+        }
     });
 
     const isBlocked = status === 'bloque';
 
     await transporter.sendMail({
-        from: '"Artisans du Maroc" <artisansdumarocc@gmail.com>',
+        from: `"Artisans du Maroc" <${process.env.MAIL_USER}>`,
         to: artisan.email,
         subject: isBlocked
             ? 'Votre compte a été bloqué — Artisans du Maroc'
@@ -87,7 +88,6 @@ const sendStatusEmail = async (artisan, status) => {
     });
 };
 
-
 exports.updateArtisanStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -101,16 +101,16 @@ exports.updateArtisanStatus = async (req, res) => {
 
         await db.execute('UPDATE artisans SET status = ? WHERE id = ?', [status, id]);
 
-        // Send email only for bloque and actif
-        if (status !== 'en_attente') {
-        try {
-            await sendStatusEmail(rows[0], status);
-        } catch (emailErr) {
-            console.warn('Email non envoyé:', emailErr.message);
-            // don't crash — status was already updated
-        }
-      }
+        // Respond immediately
         res.json({ success: true });
+
+        // Send email in background
+        if (status !== 'en_attente') {
+            sendStatusEmail(rows[0], status).catch(err => {
+                console.warn('Email non envoyé:', err.message);
+            });
+        }
+
     } catch (err) {
         console.error('updateArtisanStatus error:', err.message);
         res.status(500).json({ message: err.message });
