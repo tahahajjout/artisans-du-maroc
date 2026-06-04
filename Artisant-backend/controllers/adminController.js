@@ -56,8 +56,11 @@ exports.deleteArtisan = async (req, res) => {
 const sendStatusEmail = async (artisan, status) => {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy' }
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy' },
+        tls: { rejectUnauthorized: false }
     });
 
     const isBlocked = status === 'bloque';
@@ -99,9 +102,13 @@ exports.updateArtisanStatus = async (req, res) => {
 
         // Send email only for bloque and actif
         if (status !== 'en_attente') {
-             sendStatusEmail(rows[0], status);
+        try {
+            await sendStatusEmail(rows[0], status);
+        } catch (emailErr) {
+            console.warn('Email non envoyé:', emailErr.message);
+            // don't crash — status was already updated
         }
-
+      }
         res.json({ success: true });
     } catch (err) {
         console.error('updateArtisanStatus error:', err.message);
