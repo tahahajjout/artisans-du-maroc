@@ -99,7 +99,7 @@ exports.updateArtisanStatus = async (req, res) => {
 
         // Send email only for bloque and actif
         if (status !== 'en_attente') {
-            await sendStatusEmail(rows[0], status);
+             sendStatusEmail(rows[0], status);
         }
 
         res.json({ success: true });
