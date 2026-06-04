@@ -58,7 +58,8 @@ const sendStatusEmail = async (artisan, status) => {
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
-        secure: true,
+        secure: false,
+        family: 4,
         auth: { user: 'artisansdumarocc@gmail.com', pass: 'mhpy jonq hcmh ulpy' },
         tls: { rejectUnauthorized: false }
     });
