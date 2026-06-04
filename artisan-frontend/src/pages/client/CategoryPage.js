@@ -14,7 +14,7 @@ function CategoryPage() {
     const [galleryLightbox, setGalleryLightbox] = useState(null); // { url, type }
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/products/by-category/${categoryName}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products/by-category/${categoryName}`)
             .then(res => { setProducts(res.data); setLoading(false); })
             .catch(err => { console.error(err); setLoading(false); });
     }, [categoryName]);
@@ -23,7 +23,7 @@ function CategoryPage() {
         setSelectedProduct(p);
         setGalleryLightbox(null);
         const user = JSON.parse(localStorage.getItem('user'));
-        axios.post(`http://localhost:5000/api/products/${p.id}/visit`, {
+        axios.post(`${process.env.REACT_APP_API_URL}/api/products/${p.id}/visit`, {
             client_id: user ? user.id : null
         });
     };
@@ -48,7 +48,7 @@ function CategoryPage() {
                         <div className="cat-card" key={p.id}>
                             <div className="cat-img-wrap">
                                 <img
-                                    src={`http://localhost:5000/uploads/${p.image_url}`}
+                                    src={`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`}
                                     alt={p.title}
                                     onError={(e) => e.target.src = 'https://via.placeholder.com/300'}
                                 />
@@ -91,12 +91,12 @@ function CategoryPage() {
 
                         {/* Main image — clickable */}
                         <img
-                            src={`http://localhost:5000/uploads/${selectedProduct.image_url}`}
+                            src={`${process.env.REACT_APP_API_URL}/uploads/${selectedProduct.image_url}`}
                             alt={selectedProduct.title}
                             className="cat-popup-img"
                             style={{ cursor: 'zoom-in' }}
                             onClick={() => setGalleryLightbox({
-                                url: `http://localhost:5000/uploads/${selectedProduct.image_url}`,
+                                url: `${process.env.REACT_APP_API_URL}/uploads/${selectedProduct.image_url}`,
                                 type: 'image'
                             })}
                             onError={(e) => e.target.src = 'https://via.placeholder.com/400'}
@@ -127,13 +127,13 @@ function CategoryPage() {
                                         {selectedProduct.gallery.map(g => (
                                             <div key={g.id} className="cat-popup-gallery-item"
                                                 onClick={() => setGalleryLightbox({
-                                                    url: `http://localhost:5000/uploads/${g.file_url}`,
+                                                    url: `${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`,
                                                     type: g.file_type
                                                 })}>
                                                 {g.file_type === 'video'
-                                                    ? <video src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                    ? <video src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                         className="cat-popup-gallery-thumb" muted />
-                                                    : <img src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                    : <img src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                         alt="gallery" className="cat-popup-gallery-thumb" />}
                                                 <span className="cat-popup-gallery-badge">
                                                     {g.file_type === 'video' ? '🎥' : '🔍'}

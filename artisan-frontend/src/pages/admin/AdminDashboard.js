@@ -20,8 +20,8 @@ function AdminDashboard() {
 
     useEffect(() => {
         if (!localStorage.getItem('adminLoggedIn')) navigate('/admin/login');
-        axios.get('http://localhost:5000/api/admin/clients').then(r => setClients(r.data));
-        axios.get('http://localhost:5000/api/admin/artisans').then(r => setArtisans(r.data));
+        axios.get(`${process.env.REACT_APP_API_URL}/api/admin/clients`).then(r => setClients(r.data));
+        axios.get(`${process.env.REACT_APP_API_URL}/api/admin/artisans`).then(r => setArtisans(r.data));
     }, [navigate]);
 
     const handleLogout = () => {
@@ -33,7 +33,7 @@ function AdminDashboard() {
         setPopupLoading(true);
         setArtisanPopup({ name: artisan.full_name, products: [] });
         try {
-            const res = await axios.get(`http://localhost:5000/api/products/visits/artisan/${artisan.id}`);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/visits/artisan/${artisan.id}`);
             setArtisanPopup({ name: artisan.full_name, products: res.data });
         } catch {
             setArtisanPopup({ name: artisan.full_name, products: [] });
@@ -56,7 +56,7 @@ function AdminDashboard() {
     const handleConfirmDelete = async () => {
         if (!deleteReason.trim()) { setDeleteError('Veuillez entrer une raison de suppression.'); return; }
         try {
-            await axios.delete(`http://localhost:5000/api/admin/artisan/${deletePopup.id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/admin/artisan/${deletePopup.id}`);
             const phone = deletePopup.phone_number ? deletePopup.phone_number.replace(/\D/g, '') : '212636823256';
             const message = encodeURIComponent(
                 `Bonjour ${deletePopup.full_name},\n\nVotre compte artisan a été supprimé.\n\nRaison : ${deleteReason}\n\nCordialement,\nL'équipe Artisans du Maroc`
@@ -72,7 +72,7 @@ function AdminDashboard() {
     const handleUpdateStatus = async (newStatus) => {
         setStatusLoading(true);
         try {
-            await axios.put(`http://localhost:5000/api/admin/artisan/${statusPopup.id}/status`, { status: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/api/admin/artisan/${statusPopup.id}/status`, { status: newStatus });
             setArtisans(prev => prev.map(a => a.id === statusPopup.id ? { ...a, status: newStatus } : a));
             setStatusPopup(null);
         } catch {

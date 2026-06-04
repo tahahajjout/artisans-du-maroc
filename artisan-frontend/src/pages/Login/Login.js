@@ -27,7 +27,7 @@ function Login() {
 
         try {
             // URL mise à jour avec /api/auth/login
-            const response = await axios.post('http://localhost:5000/api/auth/login', { 
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { 
                 email, 
                 password 
             });
@@ -59,7 +59,7 @@ function Login() {
         if (!forgotEmail.trim()) { setForgotError("Veuillez entrer votre email."); return; }
         setForgotLoading(true); setForgotError('');
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/forgot-password', { email: forgotEmail });
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/forgot-password`, { email: forgotEmail });
             setClientId(res.data.clientId);
             setForgotStep(2);
         } catch (err) {
@@ -74,7 +74,7 @@ function Login() {
         if (!resetCode.trim()) { setForgotError("Veuillez entrer le code."); return; }
         setForgotLoading(true); setForgotError('');
         try {
-            await axios.post('http://localhost:5000/api/auth/verify-reset-code', { clientId, code: resetCode });
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/verify-reset-code`, { clientId, code: resetCode });
             setForgotStep(3);
         } catch (err) {
             const msg = err.response?.data?.message;
@@ -89,7 +89,7 @@ function Login() {
         if (newPassword !== confirmPassword) { setForgotError("Les mots de passe ne correspondent pas."); return; }
         setForgotLoading(true); setForgotError('');
         try {
-            await axios.post('http://localhost:5000/api/auth/reset-password', { clientId, newPassword });
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/reset-password`, { clientId, newPassword });
             setSuccessMsg("Mot de passe mis à jour ! Vous pouvez vous connecter.");
             setForgotStep(4);
         } catch (err) {

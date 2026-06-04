@@ -44,7 +44,7 @@ function ArtisanRegister() {
         if (bannerPhoto)    data.append('banner_photo', bannerPhoto);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/register-artisan', data, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/register-artisan`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (response.data.success) navigate('/artisan-space');

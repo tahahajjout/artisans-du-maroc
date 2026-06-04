@@ -28,7 +28,7 @@ function ArtisanProfile() {
     const handleDeleteAccount = async () => {
         if (!deletePassword) { setDeleteError("Veuillez entrer votre mot de passe."); return; }
         try {
-            await axios.delete(`http://localhost:5000/api/artisan/${artisan.id}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/artisan/${artisan.id}`, {
                 data: { password: deletePassword }
             });
             localStorage.removeItem('user');
@@ -45,7 +45,7 @@ function ArtisanProfile() {
                 <div className="profile-img-frame">
                     <img
                         src={artisan?.profile_picture
-                            ? `http://localhost:5000/uploads/${artisan.profile_picture}`
+                            ? `${process.env.REACT_APP_API_URL}/uploads/${artisan.profile_picture}`
                             : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}
                         alt="Profil"
                         onError={e => { e.target.src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'; }}

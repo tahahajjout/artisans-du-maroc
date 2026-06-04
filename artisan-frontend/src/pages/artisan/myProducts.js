@@ -21,14 +21,14 @@ function MyProducts() {
 
     useEffect(() => {
         if (!userId) { navigate('/artisan-login'); return; }
-        axios.get(`http://localhost:5000/api/products/artisan/${userId}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products/artisan/${userId}`)
             .then(res => { setProducts(res.data); setLoading(false); })
             .catch(err => { console.error("Erreur chargement produits:", err); setLoading(false); });
     }, [userId, navigate]);
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://localhost:5000/api/products/${deleteConfirm}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/products/${deleteConfirm}`);
             setProducts(products.filter(p => p.id !== deleteConfirm));
             setDeleteConfirm(null);
         } catch (err) {
@@ -40,7 +40,7 @@ function MyProducts() {
         setCommentsLoading(true);
         setCommentsPopup({ productTitle: product.title, comments: [] });
         try {
-            const res = await axios.get(`http://localhost:5000/api/products/${product.id}/comments`);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/${product.id}/comments`);
             setCommentsPopup({ productTitle: product.title, comments: res.data });
         } catch {
             setCommentsPopup({ productTitle: product.title, comments: [] });
@@ -52,7 +52,7 @@ function MyProducts() {
         setGalleryLoading(true);
         setGalleryPopup({ product, gallery: [] });
         try {
-            const res = await axios.get(`http://localhost:5000/api/products/${product.id}`);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/${product.id}`);
             setGalleryPopup({ product, gallery: res.data.gallery || [] });
         } catch {
             setGalleryPopup({ product, gallery: [] });
@@ -64,7 +64,7 @@ function MyProducts() {
 
     const sidebarImg = user?.profile_picture?.startsWith('http')
         ? user.profile_picture
-        : `http://localhost:5000/uploads/${user?.profile_picture}`;
+        : `${process.env.REACT_APP_API_URL}/uploads/${user?.profile_picture}`;
 
     if (loading) return <div className="artisan-main">Chargement de vos créations...</div>;
 
@@ -118,7 +118,7 @@ function MyProducts() {
                                     style={{ cursor: 'pointer', position: 'relative' }}
                                     onClick={() => handleShowGallery(p)}>
                                     <img
-                                        src={`http://localhost:5000/uploads/${p.image_url}`}
+                                        src={`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`}
                                         className="product-img"
                                         alt={p.title}
                                         onError={(e) => e.target.src = 'https://via.placeholder.com/300'}
@@ -252,10 +252,10 @@ function MyProducts() {
                                         Image principale
                                     </p>
                                     <img
-                                        src={`http://localhost:5000/uploads/${galleryPopup.product.image_url}`}
+                                        src={`${process.env.REACT_APP_API_URL}/uploads/${galleryPopup.product.image_url}`}
                                         alt="main"
                                         onClick={() => setGalleryLightbox({
-                                            url: `http://localhost:5000/uploads/${galleryPopup.product.image_url}`,
+                                            url: `${process.env.REACT_APP_API_URL}/uploads/${galleryPopup.product.image_url}`,
                                             type: 'image'
                                         })}
                                         style={{ width: '100%', maxHeight: '220px', objectFit: 'cover', borderRadius: '10px', cursor: 'zoom-in' }}
@@ -277,13 +277,13 @@ function MyProducts() {
                                             {galleryPopup.gallery.map(g => (
                                                 <div key={g.id} className="gallery-preview-item"
                                                     onClick={() => setGalleryLightbox({
-                                                        url: `http://localhost:5000/uploads/${g.file_url}`,
+                                                        url: `${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`,
                                                         type: g.file_type
                                                     })}>
                                                     {g.file_type === 'video'
-                                                        ? <video src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                        ? <video src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                             className="gallery-thumb" muted />
-                                                        : <img src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                        : <img src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                             alt="gallery" className="gallery-thumb" />}
                                                     <span className="gallery-type-badge">
                                                         {g.file_type === 'video' ? '🎥' : '🔍'}

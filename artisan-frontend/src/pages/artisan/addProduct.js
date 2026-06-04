@@ -24,14 +24,14 @@ function AddProduct() {
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/categories')
+        axios.get(`${process.env.REACT_APP_API_URL}/api/categories`)
             .then(res => setCategories(res.data))
             .catch(err => console.error("Erreur catégories:", err));
     }, []);
 
     const sidebarImg = user?.profile_picture?.startsWith('http')
         ? user.profile_picture
-        : `http://localhost:5000/uploads/${user?.profile_picture}`;
+        : `${process.env.REACT_APP_API_URL}/uploads/${user?.profile_picture}`;
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -77,7 +77,7 @@ function AddProduct() {
         galleryFiles.forEach(item => formData.append('gallery', item.file));
 
         try {
-            const response = await axios.post('http://localhost:5000/api/products/add', formData, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/products/add`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (response.status === 201) {

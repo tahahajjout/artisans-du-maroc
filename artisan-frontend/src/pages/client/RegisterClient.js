@@ -21,7 +21,7 @@ function RegisterClient() {
         
         try {
             // Envoi des données au serveur
-            const res = await axios.post('http://localhost:5000/api/auth/register-client', formData);  
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register-client`, formData);  
             
             // Si succès : On enregistre les infos de l'utilisateur dans le navigateur
             localStorage.setItem('user', JSON.stringify(res.data.user));

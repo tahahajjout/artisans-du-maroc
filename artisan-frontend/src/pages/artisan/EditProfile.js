@@ -29,7 +29,7 @@ function EditProfile() {
         }
 
         // Charger les infos actuelles
-        axios.get(`http://localhost:5000/api/artisan/private/${user.id}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/artisan/private/${user.id}`)
             .then(res => {
                 setFormData(res.data);
                 setLoading(false);
@@ -71,7 +71,7 @@ function EditProfile() {
 
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        await axios.put(`http://localhost:5000/api/artisan/${user.id}/change-password`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/artisan/${user.id}/change-password`, {
             current_password: passwordData.current_password,
             new_password: passwordData.new_password
         });
@@ -109,7 +109,7 @@ function EditProfile() {
             if (selectedBanner) data.append('banner_photo', selectedBanner);
 
             const response = await axios.put(
-                `http://localhost:5000/api/update/${user.id}`, 
+                `${process.env.REACT_APP_API_URL}/api/update/${user.id}`, 
                 data,
                 { headers: { 'Content-Type': 'multipart/form-data' } }
             );
@@ -135,7 +135,7 @@ function EditProfile() {
     // Déterminer quelle image afficher (Aperçu neuf > Image actuelle > Par défaut)
     const currentImgDisplay = previewUrl || (formData.profile_picture?.startsWith('http') 
         ? formData.profile_picture 
-        : `http://localhost:5000/uploads/${formData.profile_picture}`);
+        : `${process.env.REACT_APP_API_URL}/uploads/${formData.profile_picture}`);
 
     return (
         <div className="artisan-dashboard">
@@ -230,7 +230,7 @@ function EditProfile() {
                                 <label>🖼️ Changer la photo de bannière (profil public)</label>
                                 {bannerPreviewUrl && <img src={bannerPreviewUrl} alt="aperçu bannière" style={{width:'100%',height:'100px',objectFit:'cover',borderRadius:'10px',marginBottom:'8px'}} />}
                                 {!bannerPreviewUrl && formData.banner_photo && (
-                                    <img src={`http://localhost:5000/uploads/${formData.banner_photo}`} alt="bannière actuelle" style={{width:'100%',height:'100px',objectFit:'cover',borderRadius:'10px',marginBottom:'8px'}} />
+                                    <img src={`${process.env.REACT_APP_API_URL}/uploads/${formData.banner_photo}`} alt="bannière actuelle" style={{width:'100%',height:'100px',objectFit:'cover',borderRadius:'10px',marginBottom:'8px'}} />
                                 )}
                                 <input type="file" accept="image/*" onChange={handleBannerChange} className="file-input" />
                                 <small>Cette image apparaît en grand sur votre profil public.</small>

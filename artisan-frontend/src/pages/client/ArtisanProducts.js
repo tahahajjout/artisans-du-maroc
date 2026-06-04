@@ -36,7 +36,7 @@ function ArtisanProducts() {
     const { convert } = useCurrency();
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/products/artisan/${id}/public`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products/artisan/${id}/public`)
             .then(res => {
                 setProducts(res.data);
                 if (res.data.length > 0) setArtisanName(res.data[0].artisan_name);
@@ -85,7 +85,7 @@ function ArtisanProducts() {
         if (stars === 0) { setRatingMsg("Veuillez sélectionner une note."); return; }
         setSubmitting(true);
         try {
-            await axios.post('http://localhost:5000/api/products/rate', {
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/products/rate`, {
                 product_id: ratingModal.id,
                 client_id: user.id,
                 stars,
@@ -174,7 +174,7 @@ function ArtisanProducts() {
                             {/* Image — click opens gallery */}
                             <div className="ap-card-img" onClick={() => openGallery(p)}>
                                 <img
-                                    src={`http://localhost:5000/uploads/${p.image_url}`}
+                                    src={`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`}
                                     alt={p.title}
                                     onError={e => e.target.src = 'https://via.placeholder.com/120'}
                                 />
@@ -214,7 +214,7 @@ function ArtisanProducts() {
                                         className="ap-whatsapp-btn"
                                         onClick={() => {
                                             const u = JSON.parse(localStorage.getItem('user'));
-                                            axios.post(`http://localhost:5000/api/products/${p.id}/visit`, {
+                                            axios.post(`${process.env.REACT_APP_API_URL}/api/products/${p.id}/visit`, {
                                                 client_id: u ? u.id : null
                                             });
                                         }}
@@ -299,11 +299,11 @@ function ArtisanProducts() {
                         <div style={{ marginBottom: '14px' }}>
                             <p className="ap-gallery-section-label">Image principale</p>
                             <img
-                                src={`http://localhost:5000/uploads/${galleryModal.image_url}`}
+                                src={`${process.env.REACT_APP_API_URL}/uploads/${galleryModal.image_url}`}
                                 alt="main"
                                 className="ap-gallery-main-img"
                                 onClick={() => setGalleryLightbox({
-                                    url: `http://localhost:5000/uploads/${galleryModal.image_url}`,
+                                    url: `${process.env.REACT_APP_API_URL}/uploads/${galleryModal.image_url}`,
                                     type: 'image'
                                 })}
                                 onError={e => e.target.src = 'https://via.placeholder.com/400'}
@@ -325,13 +325,13 @@ function ArtisanProducts() {
                                     {galleryModal.gallery.map(g => (
                                         <div key={g.id} className="ap-gallery-item"
                                             onClick={() => setGalleryLightbox({
-                                                url: `http://localhost:5000/uploads/${g.file_url}`,
+                                                url: `${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`,
                                                 type: g.file_type
                                             })}>
                                             {g.file_type === 'video'
-                                                ? <video src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                ? <video src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                     className="ap-gallery-thumb" muted />
-                                                : <img src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                : <img src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                     alt="gallery" className="ap-gallery-thumb" />}
                                             <span className="ap-gallery-badge">
                                                 {g.file_type === 'video' ? '🎥' : '🔍'}

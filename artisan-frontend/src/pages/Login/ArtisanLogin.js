@@ -25,7 +25,7 @@ function ArtisanLogin() {
    const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post('http://localhost:5000/api/auth/login-artisan', { email, password });
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login-artisan`, { email, password });
         if (response.data.success) {
             const user = response.data.user;
             localStorage.setItem('user', JSON.stringify(user));
@@ -65,7 +65,7 @@ function ArtisanLogin() {
         if (!forgotEmail.trim()) { setForgotError("Veuillez entrer votre email."); return; }
         setForgotLoading(true); setForgotError('');
         try {
-            const res = await axios.post('http://localhost:5000/api/forgot-password', { email: forgotEmail });
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/forgot-password`, { email: forgotEmail });
             setArtisanId(res.data.artisanId);
             setForgotStep(2);
         } catch (err) {
@@ -81,7 +81,7 @@ function ArtisanLogin() {
         if (!resetCode.trim()) { setForgotError("Veuillez entrer le code."); return; }
         setForgotLoading(true); setForgotError('');
         try {
-            await axios.post('http://localhost:5000/api/verify-reset-code', { artisanId, code: resetCode });
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/verify-reset-code`, { artisanId, code: resetCode });
             setForgotStep(3);
         } catch (err) {
             const msg = err.response?.data?.message;
@@ -97,7 +97,7 @@ function ArtisanLogin() {
         if (newPassword !== confirmPassword) { setForgotError("Les mots de passe ne correspondent pas."); return; }
         setForgotLoading(true); setForgotError('');
         try {
-            await axios.post('http://localhost:5000/api/reset-password', { artisanId, newPassword });
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/reset-password`, { artisanId, newPassword });
             setSuccessMsg("Mot de passe mis à jour ! Vous pouvez vous connecter.");
             setForgotStep(4);
         } catch (err) {

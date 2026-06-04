@@ -20,11 +20,11 @@ function EditProduct() {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/categories')
+        axios.get(`${process.env.REACT_APP_API_URL}/api/categories`)
             .then(res => setCategories(res.data))
             .catch(err => console.error(err));
 
-        axios.get(`http://localhost:5000/api/products/${id}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products/${id}`)
             .then(res => {
                 const p = res.data;
                 setFormData({
@@ -36,7 +36,7 @@ function EditProduct() {
                     largeur: p.largeur || '',
                     couleur: p.couleur || ''
                 });
-                setPreview(`http://localhost:5000/uploads/${p.image_url}`);
+                setPreview(`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`);
                 setExistingGallery(p.gallery || []);
             })
             .catch(err => console.error(err));
@@ -85,7 +85,7 @@ function EditProduct() {
             data.append('deletedGalleryIds', JSON.stringify(deletedGalleryIds));
 
         try {
-            await axios.put(`http://localhost:5000/api/products/${id}`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/api/products/${id}`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             alert("Produit mis à jour !");
@@ -187,13 +187,13 @@ function EditProduct() {
                                     {existingGallery.map(g => (
                                         <div key={g.id} className="gallery-preview-item"
                                             onClick={() => setGalleryLightbox({
-                                                url: `http://localhost:5000/uploads/${g.file_url}`,
+                                                url: `${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`,
                                                 type: g.file_type
                                             })}>
                                             {g.file_type === 'video'
-                                                ? <video src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                ? <video src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                     className="gallery-thumb" muted />
-                                                : <img src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                : <img src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                     alt="gallery" className="gallery-thumb" />}
                                             <button type="button" className="gallery-remove-btn"
                                                 onClick={e => { e.stopPropagation(); removeExistingGallery(g.id); }}>

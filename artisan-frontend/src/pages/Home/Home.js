@@ -45,14 +45,14 @@ function Home() {
 
         const fetchData = async () => {
             try {
-                const catRes = await axios.get('http://localhost:5000/api/categories');
+                const catRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/categories`);
                 setCategories(catRes.data);
 
-                const artRes = await axios.get('http://localhost:5000/api/top-by-city');
+                const artRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/top-by-city`);
                 setArtisans(artRes.data);
 
                 const clientId = parsedUser ? parsedUser.id : 'guest';
-                const recoRes = await axios.get(`http://localhost:5000/api/products/recommendations/${clientId}`);
+                const recoRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/recommendations/${clientId}`);
                 setRecommendations(recoRes.data.products || []);
                 setRecoType(recoRes.data.type || 'general');
             } catch (err) {
@@ -68,7 +68,7 @@ function Home() {
         setSearching(true);
         setShowResults(true);
         try {
-            const res = await axios.get(`http://localhost:5000/api/search?q=${encodeURIComponent(searchTerm)}`);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/search?q=${encodeURIComponent(searchTerm)}`);
             setSearchResults(res.data);
         } catch {
             setSearchResults({ artisans: [], products: [] });
@@ -84,7 +84,7 @@ function Home() {
     const prevRecoSlide = () => { if (recoIndex - 4 >= 0) setRecoIndex(recoIndex - 4); };
 
     const trackVisit = (productId) => {
-        axios.post(`http://localhost:5000/api/products/${productId}/visit`, {
+        axios.post(`${process.env.REACT_APP_API_URL}/api/products/${productId}/visit`, {
             client_id: user ? user.id : null
         });
     };
@@ -154,7 +154,7 @@ function Home() {
                                 {searchResults.artisans.map(a => (
                                     <div className="search-artisan-card" key={a.id}>
                                         <img
-                                            src={a.profile_picture?.startsWith('http') ? a.profile_picture : `http://localhost:5000/uploads/${a.profile_picture}`}
+                                            src={a.profile_picture?.startsWith('http') ? a.profile_picture : `${process.env.REACT_APP_API_URL}/uploads/${a.profile_picture}`}
                                             alt={a.full_name}
                                             onError={e => e.target.src = 'https://via.placeholder.com/60'} />
                                         <div className="search-artisan-info">
@@ -174,7 +174,7 @@ function Home() {
                                 <h4 className="search-section-title">Produits</h4>
                                 {searchResults.products.map(p => (
                                     <div className="search-product-card" key={p.id}>
-                                        <img src={`http://localhost:5000/uploads/${p.image_url}`} alt={p.title}
+                                        <img src={`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`} alt={p.title}
                                             onError={e => e.target.src = 'https://via.placeholder.com/80'} />
                                         <div className="search-product-info">
                                             <strong>{p.title}</strong>
@@ -221,7 +221,7 @@ function Home() {
                                     onClick={() => { trackVisit(p.id); navigate(`/artisan/${p.artisan_id}/products`); }}>
                                     <div className="rating-tag">★ {Number(p.average_rating || 0).toFixed(1)}</div>
                                     <img className="artisan-img"
-                                        src={`http://localhost:5000/uploads/${p.image_url}`}
+                                        src={`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`}
                                         alt={p.title}
                                         onError={e => e.target.src = 'https://via.placeholder.com/400'} />
                                     <div className="artisan-info">
@@ -259,7 +259,7 @@ function Home() {
                         {artisans.slice(currentIndex, currentIndex + 4).map(art => {
                             const artisanImg = art.profile_picture?.startsWith('http')
                                 ? art.profile_picture
-                                : `http://localhost:5000/uploads/${art.profile_picture}`;
+                                : `${process.env.REACT_APP_API_URL}/uploads/${art.profile_picture}`;
                             return (
                                 <Link to={`/artisan/${art.id}`} key={art.id} className="artisan-card">
                                     <div className="rating-tag">★ {Number(art.average_rating || 0).toFixed(1)}</div>
@@ -286,12 +286,12 @@ function Home() {
                         <button className="reco-popup-close" onClick={closeRecoPopup}>✕</button>
 
                         <img
-                            src={`http://localhost:5000/uploads/${recoPopup.image_url}`}
+                            src={`${process.env.REACT_APP_API_URL}/uploads/${recoPopup.image_url}`}
                             alt={recoPopup.title}
                             className="reco-popup-img"
                             style={{ cursor: 'zoom-in' }}
                             onClick={() => setRecoLightbox({
-                                url: `http://localhost:5000/uploads/${recoPopup.image_url}`,
+                                url: `${process.env.REACT_APP_API_URL}/uploads/${recoPopup.image_url}`,
                                 type: 'image'
                             })}
                             onError={e => e.target.src = 'https://via.placeholder.com/400'}
@@ -320,13 +320,13 @@ function Home() {
                                         {recoPopup.gallery.map(g => (
                                             <div key={g.id} className="reco-popup-gallery-item"
                                                 onClick={() => setRecoLightbox({
-                                                    url: `http://localhost:5000/uploads/${g.file_url}`,
+                                                    url: `${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`,
                                                     type: g.file_type
                                                 })}>
                                                 {g.file_type === 'video'
-                                                    ? <video src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                    ? <video src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                         className="reco-popup-gallery-thumb" muted />
-                                                    : <img src={`http://localhost:5000/uploads/${g.file_url}`}
+                                                    : <img src={`${process.env.REACT_APP_API_URL}/uploads/${g.file_url}`}
                                                         alt="gallery" className="reco-popup-gallery-thumb" />}
                                                 <span className="reco-popup-gallery-badge">
                                                     {g.file_type === 'video' ? '🎥' : '🔍'}

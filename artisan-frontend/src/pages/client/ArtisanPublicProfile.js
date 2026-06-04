@@ -9,7 +9,7 @@ function ArtisanPublicProfile() {
     const [artisan, setArtisan] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/artisan/${id}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/artisan/${id}`)
             .then(res => setArtisan(res.data))
             .catch(err => console.error("Erreur de récupération:", err));
     }, [id]);
@@ -19,11 +19,11 @@ function ArtisanPublicProfile() {
     // Gestion des images dynamiques
     const profileImg = artisan.profile_picture?.startsWith('http') 
         ? artisan.profile_picture 
-        : `http://localhost:5000/uploads/${artisan.profile_picture}`;
+        : `${process.env.REACT_APP_API_URL}/uploads/${artisan.profile_picture}`;
 
     // On utilise la photo de profil en bannière si banner_photo n'existe pas
     const bannerImg = artisan.banner_photo 
-        ? (artisan.banner_photo.startsWith('http') ? artisan.banner_photo : `http://localhost:5000/uploads/${artisan.banner_photo}`)
+        ? (artisan.banner_photo.startsWith('http') ? artisan.banner_photo : `${process.env.REACT_APP_API_URL}/uploads/${artisan.banner_photo}`)
         : profileImg;
 
     return (
