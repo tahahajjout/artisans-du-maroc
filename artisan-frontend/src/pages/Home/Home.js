@@ -7,11 +7,11 @@ import Footer from '../../components/Footer';
 import logoImg from '../../logo.png';
 
 const categoryImages = {
-    'tapis': '/public/images/categories/tapis.jpg',
-    'céramique': '/public/images/categories/céramique.jpg',
-    'cuir': '/public/images/categories/cuir.jpg',
-    'bijoux': '/public/images/categories/bijoux.jpg'
-};
+    'tapis': '/tapis.jpg',
+    'céramique': '/céramique.jpg',
+    'cuir': '/cuir.jpg',    
+    'bijoux': '/bijoux.jpg'
+};  
 
 function Home() {
     const [categories, setCategories]     = useState([]);
