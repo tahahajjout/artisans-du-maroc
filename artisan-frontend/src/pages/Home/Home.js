@@ -8,7 +8,7 @@ import logoImg from '../../logo.png';
 
 const categoryImages = {
     'tapis': '/tapis.jpg',
-    'céramique': '/céramique.jpg',
+    'céramique': '/ceramique.jpg',
     'cuir': '/cuir.jpg',    
     'bijoux': '/bijoux.jpg'
 };  
