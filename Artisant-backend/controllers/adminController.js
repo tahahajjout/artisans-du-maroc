@@ -52,7 +52,7 @@ exports.deleteArtisan = async (req, res) => {
   }
 };
 
-/*const sendStatusEmail = async (artisan, status) => {
+const sendStatusEmail = async (artisan, status) => {
     const axios = require('axios');
     const isBlocked = status === 'bloque';
 
@@ -80,9 +80,9 @@ exports.deleteArtisan = async (req, res) => {
             'Content-Type': 'application/json'
         }
     });
-};*/
+};
 
-const sendStatusEmail = async (artisan, status) => {
+/*const sendStatusEmail = async (artisan, status) => {
     const nodemailer = require('nodemailer');
     /* const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -91,7 +91,7 @@ const sendStatusEmail = async (artisan, status) => {
             pass: process.env.MAIL_PASS
         }
     });*/
-        const transporter = nodemailer.createTransport({
+       /* const transporter = nodemailer.createTransport({
         host: 'smtp-relay.brevo.com',
         port: 587,
         secure: true,
@@ -122,7 +122,7 @@ const sendStatusEmail = async (artisan, status) => {
             </div>
         `
     });
-};
+};*/
 
 exports.updateArtisanStatus = async (req, res) => {
     const { id } = req.params;
