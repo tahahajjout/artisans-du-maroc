@@ -114,7 +114,7 @@ function ArtisanProducts() {
         <div className="ap-page">
             {/* ── Header ── */}
             <header className="ap-header">
-                <button className="ap-back" onClick={() => navigate(`/artisan/${id}`)}>‹</button>
+                <button className="ap-back" onClick={() => navigate(-1)}>‹</button>
                 <div className="ap-header-titles">
                     <span className="ap-header-sub">MES CRÉATIONS:</span>
                     <span className="ap-header-main">{artisanName.toUpperCase()}</span>
