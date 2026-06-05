@@ -84,13 +84,13 @@ exports.deleteArtisan = async (req, res) => {
 
 const sendStatusEmail = async (artisan, status) => {
     const nodemailer = require('nodemailer');
-     const transporter = nodemailer.createTransport({
+    /* const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS
         }
-    }); 
+    });*/
         const transporter = nodemailer.createTransport({
         host: 'smtp-relay.brevo.com',
         port: 465,
