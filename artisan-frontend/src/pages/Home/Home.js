@@ -7,10 +7,10 @@ import Footer from '../../components/Footer';
 import logoImg from '../../logo.png';
 
 const categoryImages = {
-    'tapis': 'https://images.unsplash.com/photo-1576016770956-debb63d92058?auto=format&fit=crop&q=80&w=400',
-    'céramique': 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=400',
-    'cuir': 'https://images.unsplash.com/photo-1547949003-9792a18a2601?auto=format&fit=crop&q=80&w=400',
-    'bijoux': 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&q=80&w=400'
+    'tapis': '/public/images/categories/tapis.jpg',
+    'céramique': '/public/images/categories/céramique.jpg',
+    'cuir': '/public/images/categories/cuir.jpg',
+    'bijoux': '/public/images/categories/bijoux.jpg'
 };
 
 function Home() {
