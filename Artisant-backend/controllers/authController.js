@@ -149,12 +149,14 @@ exports.forgotPassword = async (req, res) => {
         // Send email
         const nodemailer = require('nodemailer');
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'taha2000hajjout@gmail.com',    
-                pass: 'ithm bsrz sikd tbbj'   
-            }
-        });
+        host: 'smtp-relay.brevo.com',
+        port: 465,
+        secure: true,
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
+        }
+    });
 
         await transporter.sendMail({
             from: '"Artisans du Maroc" <taha2000hajjout@gmail.com>',
