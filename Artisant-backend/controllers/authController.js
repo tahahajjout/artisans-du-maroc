@@ -125,7 +125,7 @@ exports.registerClient = async (req, res) => {
 };
 
 
-exports.forgotPassword = async (req, res) => {
+/*exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
         const [rows] = await db.execute(
@@ -158,6 +158,7 @@ exports.forgotPassword = async (req, res) => {
         }
     });
 
+
         await transporter.sendMail({
             from: '"Artisans du Maroc" <taha2000hajjout@gmail.com>',
             to: client.email,
@@ -180,6 +181,58 @@ exports.forgotPassword = async (req, res) => {
 
     } catch (err) {
         console.error('forgotPassword error:', err.message);
+        res.status(500).json({ message: err.message });
+    }
+};*/
+
+exports.forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const [rows] = await db.execute(
+            'SELECT id, full_name, email FROM clients WHERE email = ?',
+            [email]
+        );
+        if (rows.length === 0)
+            return res.status(404).json({ message: "Aucun compte trouvé avec cet email." });
+
+        const client = rows[0];
+
+        const code = Math.floor(10000 + Math.random() * 90000).toString();
+        const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+        await db.execute(
+            'UPDATE clients SET reset_code = ?, reset_code_expires = ? WHERE id = ?',
+            [code, expires, client.id]
+        );
+
+        const axios = require('axios');
+        await axios.post('https://api.brevo.com/v3/smtp/email', {
+            sender: { name: 'Artisans du Maroc', email: 'artisansdumarocc@gmail.com' },
+            to: [{ email: client.email, name: client.full_name }],
+            subject: 'Code de réinitialisation — Artisans du Maroc',
+            htmlContent: `
+                <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #eee;border-radius:12px;">
+                    <h2 style="color:#b95d2b;">Artisans du Maroc</h2>
+                    <p>Bonjour <strong>${client.full_name}</strong>,</p>
+                    <p>Votre code de réinitialisation de mot de passe est :</p>
+                    <div style="text-align:center;margin:24px 0;">
+                        <span style="font-size:36px;font-weight:bold;letter-spacing:12px;color:#b95d2b;">${code}</span>
+                    </div>
+                    <p style="color:#888;font-size:13px;">Ce code expire dans <strong>10 minutes</strong>.</p>
+                    <p style="color:#888;font-size:13px;">Si vous n'avez pas fait cette demande, ignorez cet email.</p>
+                </div>
+            `
+        }, {
+            headers: {
+                'api-key': process.env.BREVO_API_KEY,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        res.json({ success: true, clientId: client.id });
+
+    } catch (err) {
+        console.error('forgotPassword error:', err.response?.data || err.message);
         res.status(500).json({ message: err.message });
     }
 };

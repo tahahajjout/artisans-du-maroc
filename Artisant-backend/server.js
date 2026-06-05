@@ -47,29 +47,3 @@ app.listen(PORT, () => {
 });
 
 
-/* test*/
-// Temporary test route — remove after fixing
-app.get('/test-email', async (req, res) => {
-    const axios = require('axios');
-    try {
-        const result = await axios.post('https://api.brevo.com/v3/smtp/email', {
-            sender: { name: 'Test', email: 'artisansdumarocc@gmail.com' },
-            to: [{ email: 'artisansdumarocc@gmail.com', name: 'Test' }],
-            subject: 'Test Railway',
-            htmlContent: '<p>Test email from Railway</p>'
-        }, {
-            headers: {
-                'api-key': process.env.BREVO_API_KEY,
-                'Content-Type': 'application/json'
-            }
-        });
-        res.json({ success: true, data: result.data });
-    } catch (err) {
-        res.json({ 
-            success: false, 
-            error: err.response?.data,
-            status: err.response?.status,
-            message: err.message
-        });
-    }
-});
