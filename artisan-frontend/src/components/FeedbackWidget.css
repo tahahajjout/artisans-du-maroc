@@ -1,0 +1,126 @@
+/* ── Widget container ── */
+.feedback-widget {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 300px;
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 9000;
+    animation: slideIn 0.4s ease;
+    border-top: 4px solid #b85c28;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Close button ── */
+.feedback-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: #f0ece6;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    transition: background 0.2s;
+}
+.feedback-close:hover { background: #e0d8d0; }
+
+/* ── Title ── */
+.feedback-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2c1a0e;
+    margin: 0 0 4px;
+    padding-right: 20px;
+}
+
+.feedback-subtitle {
+    font-size: 12px;
+    color: #aaa;
+    margin: 0 0 16px;
+}
+
+/* ── Stars ── */
+.feedback-stars {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.feedback-star {
+    font-size: 28px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.15s, transform 0.1s;
+    user-select: none;
+}
+.feedback-star.filled { color: #f4a733; }
+.feedback-star:hover  { transform: scale(1.2); }
+
+/* ── Comment ── */
+.feedback-comment {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid #eee;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+.feedback-comment:focus { border-color: #b85c28; }
+
+/* ── Error ── */
+.feedback-error {
+    color: #e74c3c;
+    font-size: 12px;
+    margin: 6px 0 0;
+}
+
+/* ── Submit button ── */
+.feedback-submit {
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px;
+    background: #b85c28;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.feedback-submit:hover { background: #96491f; }
+
+/* ── Success state ── */
+.feedback-success {
+    text-align: center;
+    padding: 10px 0;
+}
+.feedback-success-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+.feedback-success p {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 15px;
+    margin: 0;
+}

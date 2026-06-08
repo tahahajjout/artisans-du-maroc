@@ -16,7 +16,7 @@ function EditProduct() {
     const [galleryLightbox, setGalleryLightbox] = useState(null);
     const [formData, setFormData] = useState({
         title: '', price: '', description: '',
-        category_id: '', hauteur: '', largeur: '', couleur: ''
+        category_id: '', hauteur: '', largeur: '', couleur: '', matiere : ''
     });
 
     useEffect(() => {
@@ -34,7 +34,8 @@ function EditProduct() {
                     category_id: p.category_id || '',
                     hauteur: p.hauteur || '',
                     largeur: p.largeur || '',
-                    couleur: p.couleur || ''
+                    couleur: p.couleur || '',
+                    matiere : p.matiere  || ''
                 });
                 setPreview(`${process.env.REACT_APP_API_URL}/uploads/${p.image_url}`);
                 setExistingGallery(p.gallery || []);
@@ -79,6 +80,7 @@ function EditProduct() {
         data.append('hauteur', formData.hauteur);
         data.append('largeur', formData.largeur);
         data.append('couleur', formData.couleur);
+        data.append('matiere ', formData.matiere );
         if (selectedFile) data.append('image', selectedFile);
         newGalleryFiles.forEach(item => data.append('gallery', item.file));
         if (deletedGalleryIds.length > 0)
@@ -149,6 +151,12 @@ function EditProduct() {
                                     ))}
                                 </select>
                             </div>
+                        </div>
+                        <div className="input-group" style={{ marginTop: '10px' }}>
+                            <label>Matériel</label>
+                            <input type="text" placeholder="Ex: Argile, Laine, Cuir, Bois..."
+                                value={formData.matiere }
+                                onChange={e => setFormData({ ...formData, matiere : e.target.value })} />
                         </div>
 
                         {/* ── Description ── */}

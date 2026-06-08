@@ -14,6 +14,7 @@ function AddProduct() {
     const [hauteur, setHauteur]         = useState('');
     const [largeur, setLargeur]         = useState('');
     const [couleur, setCouleur]         = useState('');
+    const [matiere , setmatiere ]       = useState('');
     const [imageFile, setImageFile]     = useState(null);
     const [preview, setPreview]         = useState(null);
     const [galleryFiles, setGalleryFiles] = useState([]);
@@ -74,6 +75,7 @@ function AddProduct() {
         if (hauteur) formData.append('hauteur', hauteur);
         if (largeur) formData.append('largeur', largeur);
         if (couleur) formData.append('couleur', couleur);
+        if (matiere ) formData.append('matiere ', matiere );
         galleryFiles.forEach(item => formData.append('gallery', item.file));
 
         try {
@@ -165,6 +167,13 @@ function AddProduct() {
                         <input type="text" className="art-input"
                             placeholder="Ex: Rouge, Beige, Multicolore..."
                             value={couleur} onChange={(e) => setCouleur(e.target.value)} />
+                         <label className="info-label">Matériel</label>
+
+
+                         {/* ── Matériel ── */}
+                        <input type="text" className="art-input"
+                             placeholder="Ex: Argile, Laine, Cuir, Bois..."
+                             value={matiere } onChange={(e) => setmatiere (e.target.value)} />
 
                         {/* ── Dimensions ── */}
                         <label className="info-label">Dimensions</label>

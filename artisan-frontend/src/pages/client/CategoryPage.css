@@ -372,3 +372,78 @@
     transition: background 0.2s;
 }
 .cat-lightbox-close:hover { background: rgba(255,255,255,0.3); }
+
+/* ── Filter bar ── */
+.cat-filter-bar {
+    padding: 10px 40px;
+    display: flex;
+    justify-content: flex-end;
+    background: #faf8f5;
+}
+
+.cat-filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid #b35935;
+    background: white;
+    color: #b35935;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.cat-filter-toggle.active,
+.cat-filter-toggle:hover {
+    background: #b35935;
+    color: white;
+}
+
+/* ── Filters panel ── */
+.cat-filters-panel {
+    background: white;
+    margin: 0 40px 12px;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+
+.cat-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cat-filter-group label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+}
+
+.cat-sort-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cat-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #ddd;
+    background: white;
+    color: #555;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.cat-pill.selected {
+    background: #b35935;
+    border-color: #b35935;
+    color: white;
+    font-weight: 600;
+}

@@ -16,12 +16,22 @@ function AdminDashboard() {
     const [deleteError, setDeleteError]     = useState('');
     const [statusPopup, setStatusPopup]     = useState(null);
     const [statusLoading, setStatusLoading] = useState(false);
+    /*feedback*/
+    const [feedbacks, setFeedbacks]   = useState([]);
+    const [feedbackAvg, setFeedbackAvg] = useState(0);
+    const [feedbackTotal, setFeedbackTotal] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!localStorage.getItem('adminLoggedIn')) navigate('/admin/login');
         axios.get(`${process.env.REACT_APP_API_URL}/api/admin/clients`).then(r => setClients(r.data));
         axios.get(`${process.env.REACT_APP_API_URL}/api/admin/artisans`).then(r => setArtisans(r.data));
+        axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/all`)
+                    .then(r => {
+                        setFeedbacks(r.data.feedbacks || []);
+                        setFeedbackAvg(r.data.average || 0);
+                        setFeedbackTotal(r.data.total || 0);
+                    });
     }, [navigate]);
 
     const handleLogout = () => {
@@ -112,6 +122,9 @@ function AdminDashboard() {
                     </div>
                     <div className={`nav-item ${activeTab === 'artisans' ? 'active' : ''}`} onClick={() => setActiveTab('artisans')}>
                         🧑‍🎨 Artisans
+                    </div>
+                    <div className={`nav-item ${activeTab === 'feedbacks' ? 'active' : ''}`} onClick={() => setActiveTab('feedbacks')}>
+                        ⭐ Avis Site
                     </div>
                     <div className="nav-item logout-item" onClick={handleLogout}>
                         🚪 Déconnexion
@@ -243,6 +256,61 @@ function AdminDashboard() {
                             )}
                         </>
                     )}
+                    {/* FEEDBACKS TAB */}
+                        {activeTab === 'feedbacks' && (
+                            <>
+                                <h2 className="card-title">Avis sur le site</h2>
+
+                                {/* Stats */}
+                                <div className="feedback-admin-stats">
+                                    <div className="feedback-admin-stat">
+                                        <span className="feedback-admin-stat-value">★ {feedbackAvg}</span>
+                                        <span className="feedback-admin-stat-label">Note moyenne</span>
+                                    </div>
+                                    <div className="feedback-admin-stat">
+                                        <span className="feedback-admin-stat-value">{feedbackTotal}</span>
+                                        <span className="feedback-admin-stat-label">Avis total</span>
+                                    </div>
+                                </div>
+
+                                {feedbacks.length === 0 ? (
+                                    <p className="admin-empty">Aucun avis pour le moment.</p>
+                                ) : (
+                                    <table className="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Note</th>
+                                                <th>Commentaire</th>
+                                                <th>Type</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {feedbacks.map((f, i) => (
+                                                <tr key={f.id}>
+                                                    <td className="admin-index">{i + 1}</td>
+                                                    <td style={{ color: '#f4a733', fontWeight: 700 }}>
+                                                        {'★'.repeat(f.stars)}{'☆'.repeat(5 - f.stars)}
+                                                    </td>
+                                                    <td style={{ color: '#555' }}>
+                                                        {f.comment || <span style={{ color: '#ccc' }}>—</span>}
+                                                    </td>
+                                                    <td>
+                                                        <span className={`feedback-type-badge ${f.user_type === 'client' ? 'feedback-type-client' : 'feedback-type-visiteur'}`}>
+                                                            {f.user_type === 'client' ? '👤 Client' : '👁 Visiteur'}
+                                                        </span>
+                                                    </td>
+                                                    <td style={{ color: '#aaa', fontSize: '13px' }}>
+                                                        {new Date(f.created_at).toLocaleDateString('fr-FR')}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </>
+                        )}
                 </div>
             </main>
 

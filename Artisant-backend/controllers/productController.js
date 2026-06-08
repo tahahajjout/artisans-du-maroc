@@ -22,7 +22,7 @@ exports.uploadImage = upload.fields([
 // ── ADD PRODUCT ──────────────────────────────────────────────────────────────
 exports.addProduct = async (req, res) => {
     try {
-        const { title, description, price, category_id, artisan_id, hauteur, largeur, couleur } = req.body;
+        const { title, description, price, category_id, artisan_id, hauteur, largeur, couleur, matiere   } = req.body;
         const image_url = req.files?.['image']?.[0]?.filename || null;
 
         if (!title || !price || !category_id || !artisan_id || !image_url) {
@@ -32,10 +32,10 @@ exports.addProduct = async (req, res) => {
         }
 
         const [result] = await db.execute(`
-            INSERT INTO products (title, description, price, image_url, category_id, artisan_id, hauteur, largeur, couleur)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO products (title, description, price, image_url, category_id, artisan_id, hauteur, largeur, couleur, matiere )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [title, description || '', price, image_url, category_id, artisan_id,
-            hauteur || null, largeur || null, couleur || null]);
+            hauteur || null, largeur || null, couleur || null, matiere  || null]);
 
         const productId = result.insertId;
 
@@ -115,14 +115,14 @@ exports.deleteProduct = async (req, res) => {
 // ── UPDATE PRODUCT ───────────────────────────────────────────────────────────
 exports.updateProduct = async (req, res) => {
     const { id } = req.params;
-    const { title, price, description, category_id, hauteur, largeur, couleur, deletedGalleryIds } = req.body;
+    const { title, price, description, category_id, hauteur, largeur, couleur, matiere , deletedGalleryIds } = req.body;
 
     try {
         // Build dynamic SET clause
         let sets = ['title = ?', 'price = ?', 'description = ?', 'category_id = ?',
-                    'hauteur = ?', 'largeur = ?', 'couleur = ?'];
+                    'hauteur = ?', 'largeur = ?', 'couleur = ?', 'matiere  = ?'];
         let params = [title, price, description, category_id,
-                      hauteur || null, largeur || null, couleur || null];
+                      hauteur || null, largeur || null, couleur || null, matiere  || null];
 
         if (req.files?.['image']?.[0]) {
             sets.push('image_url = ?');
@@ -190,7 +190,7 @@ exports.getProductsByCategory = async (req, res) => {
     try {
         const [rows] = await db.execute(`
             SELECT p.id, p.title, p.description, p.price, p.image_url,
-                   p.hauteur, p.largeur, p.couleur,
+                   p.hauteur, p.largeur, p.couleur, p.matiere ,
                    a.id AS artisan_id, a.full_name AS artisan_name, a.city AS artisan_city,
                    IFNULL(AVG(r.stars), 0) AS average_rating,
                    COUNT(r.id) AS rating_count
@@ -225,7 +225,7 @@ exports.getArtisanPublicProducts = async (req, res) => {
     try {
         const [rows] = await db.execute(`
             SELECT p.id, p.title, p.description, p.price, p.image_url,
-                   p.hauteur, p.largeur, p.couleur,
+                   p.hauteur, p.largeur, p.couleur, p.matiere ,
                    c.name AS category_name,
                    a.full_name AS artisan_name, a.phone_number,
                    IFNULL(AVG(r.stars), 0) AS average_rating,
@@ -343,7 +343,7 @@ exports.getRecommendations = async (req, res) => {
 
     const generalQuery = `
         SELECT p.id, p.title, p.price, p.image_url,
-               p.hauteur, p.largeur, p.couleur, p.description,
+               p.hauteur, p.largeur, p.couleur,p.matiere , p.description,
                a.id AS artisan_id, a.full_name AS artisan_name, a.phone_number,
                c.name AS category_name,
                IFNULL(AVG(r.stars), 0) AS average_rating,
@@ -387,7 +387,7 @@ exports.getRecommendations = async (req, res) => {
         const fetchFromCategory = async (categoryId) => {
             const [rows] = await db.execute(`
                 SELECT p.id, p.title, p.price, p.image_url,
-                       p.hauteur, p.largeur, p.couleur, p.description,
+                       p.hauteur, p.largeur, p.couleur, p.description,p.matiere ,
                        a.id AS artisan_id, a.full_name AS artisan_name, a.phone_number,
                        c.name AS category_name,
                        IFNULL(AVG(r.stars), 0) AS average_rating,
@@ -421,7 +421,7 @@ exports.getRecommendations = async (req, res) => {
             const excludedCatIds = catVisits.map(c => c.category_id).join(',') || '0';// exclure id des catégories déjà utilisées //join est pour chaine pour sql
             const [fillRows] = await db.execute(`
                 SELECT p.id, p.title, p.price, p.image_url,
-                    p.hauteur, p.largeur, p.couleur, p.description,
+                    p.hauteur, p.largeur, p.couleur, p.description,p.matiere ,
                     a.id AS artisan_id, a.full_name AS artisan_name, a.phone_number,
                     c.name AS category_name,
                     IFNULL(AVG(r.stars), 0) AS average_rating,

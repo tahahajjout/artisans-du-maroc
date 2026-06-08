@@ -17,6 +17,7 @@ import CategoryPage from './pages/client/CategoryPage';
 import ArtisanProducts from './pages/client/ArtisanProducts';
 import AdminLogin from './pages/Login/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import FeedbackWidget from './components/FeedbackWidget';
 
 import './App.css';
 
@@ -47,7 +48,10 @@ function App() {
           <Route path="/artisan/edit-profile" element={<EditProfile />} />
 
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          
+
         </Routes>
+        <FeedbackWidget />
       </Router>
     </CurrencyProvider>
   );

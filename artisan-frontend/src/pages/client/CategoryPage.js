@@ -1,23 +1,45 @@
 import Footer from '../../components/Footer';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCurrency } from '../../components/CurrencyContext';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import './CategoryPage.css';
 
+const SORT_OPTIONS = [
+    { value: 'rating',     label: '★ Meilleure note' },
+    { value: 'alpha_asc',  label: 'A → Z' },
+    { value: 'alpha_desc', label: 'Z → A' },
+    { value: 'price_asc',  label: 'Prix croissant' },
+    { value: 'price_desc', label: 'Prix décroissant' },
+];
+
 function CategoryPage() {
     const { categoryName } = useParams();
     const { convert } = useCurrency();
-    const [products, setProducts]           = useState([]);
-    const [loading, setLoading]             = useState(true);
+    const [products, setProducts]               = useState([]);
+    const [loading, setLoading]                 = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [galleryLightbox, setGalleryLightbox] = useState(null); // { url, type }
+    const [galleryLightbox, setGalleryLightbox] = useState(null);
+    const [sort, setSort]                       = useState('rating');
+    const [showFilters, setShowFilters]         = useState(false);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}/api/products/by-category/${categoryName}`)
             .then(res => { setProducts(res.data); setLoading(false); })
             .catch(err => { console.error(err); setLoading(false); });
     }, [categoryName]);
+
+    const displayed = useMemo(() => {
+        let list = [...products];
+        switch (sort) {
+            case 'alpha_asc':  list.sort((a, b) => a.title.localeCompare(b.title)); break;
+            case 'alpha_desc': list.sort((a, b) => b.title.localeCompare(a.title)); break;
+            case 'price_asc':  list.sort((a, b) => a.price - b.price); break;
+            case 'price_desc': list.sort((a, b) => b.price - a.price); break;
+            default:           list.sort((a, b) => b.average_rating - a.average_rating || a.title.localeCompare(b.title));
+        }
+        return list;
+    }, [products, sort]);
 
     const openProduct = (p) => {
         setSelectedProduct(p);
@@ -37,14 +59,43 @@ function CategoryPage() {
                 <span className="cat-count">{products.length} création{products.length !== 1 ? 's' : ''}</span>
             </header>
 
+            {/* ── Filter bar ── */}
+            <div className="cat-filter-bar">
+                <button
+                    className={`cat-filter-toggle ${showFilters ? 'active' : ''}`}
+                    onClick={() => setShowFilters(v => !v)}
+                >
+                    ⚙ Trier
+                </button>
+            </div>
+
+            {showFilters && (
+                <div className="cat-filters-panel">
+                    <div className="cat-filter-group">
+                        <label>Trier par</label>
+                        <div className="cat-sort-pills">
+                            {SORT_OPTIONS.map(o => (
+                                <button
+                                    key={o.value}
+                                    className={`cat-pill ${sort === o.value ? 'selected' : ''}`}
+                                    onClick={() => setSort(o.value)}
+                                >
+                                    {o.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* ── Grid ── */}
             {loading ? (
                 <p className="cat-loading">Chargement...</p>
-            ) : products.length === 0 ? (
+            ) : displayed.length === 0 ? (
                 <p className="cat-empty">Aucun produit dans cette catégorie pour le moment.</p>
             ) : (
                 <div className="cat-grid">
-                    {products.map(p => (
+                    {displayed.map(p => (
                         <div className="cat-card" key={p.id}>
                             <div className="cat-img-wrap">
                                 <img
@@ -63,10 +114,10 @@ function CategoryPage() {
                                 <h3 className="cat-product-name">{p.title}</h3>
                                 <p className="cat-price">{convert(p.price)}</p>
                                 <p className="cat-artisan-name">🧑‍🎨 {p.artisan_name}</p>
-                                {/* Couleur & Dimensions tags */}
-                                {(p.couleur || p.hauteur || p.largeur) && (
+                                {(p.couleur || p.hauteur || p.largeur || p.matiere) && (
                                     <div className="cat-details-row">
                                         {p.couleur && <span className="cat-detail-tag">🎨 {p.couleur}</span>}
+                                        {p.matiere  && <span className="cat-detail-tag">🧵 {p.matiere}</span>}
                                         {(p.hauteur || p.largeur) && (
                                             <span className="cat-detail-tag">
                                                 📐 {[p.hauteur && `H:${p.hauteur}`, p.largeur && `L:${p.largeur}`].filter(Boolean).join(' ')}
@@ -89,7 +140,6 @@ function CategoryPage() {
                     <div className="cat-popup" onClick={(e) => e.stopPropagation()}>
                         <button className="cat-popup-close" onClick={() => { setSelectedProduct(null); setGalleryLightbox(null); }}>✕</button>
 
-                        {/* Main image — clickable */}
                         <img
                             src={`${process.env.REACT_APP_API_URL}/uploads/${selectedProduct.image_url}`}
                             alt={selectedProduct.title}
@@ -106,18 +156,17 @@ function CategoryPage() {
                             <h2 className="cat-popup-title">{selectedProduct.title}</h2>
                             <p className="cat-popup-price">{convert(selectedProduct.price)}</p>
 
-                            {/* Couleur & Dimensions */}
                             <div className="cat-popup-details">
                                 <span className="cat-detail-tag">🎨 {selectedProduct.couleur || 'Non spécifié'}</span>
                                 <span className="cat-detail-tag">↕ H: {selectedProduct.hauteur || 'Non spécifié'}</span>
                                 <span className="cat-detail-tag">↔ L: {selectedProduct.largeur || 'Non spécifié'}</span>
+                                <span className="cat-detail-tag">🧵 {selectedProduct.matiere  || 'Non spécifié'}</span>
                             </div>
 
                             {selectedProduct.description && (
                                 <p className="cat-popup-desc">{selectedProduct.description}</p>
                             )}
 
-                            {/* Gallery */}
                             {selectedProduct.gallery && selectedProduct.gallery.length > 0 && (
                                 <div className="cat-popup-gallery">
                                     <p className="cat-popup-gallery-label">

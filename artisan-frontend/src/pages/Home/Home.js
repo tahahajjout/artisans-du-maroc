@@ -87,6 +87,8 @@ function Home() {
         axios.post(`${process.env.REACT_APP_API_URL}/api/products/${productId}/visit`, {
             client_id: user ? user.id : null
         });
+            window.dispatchEvent(new Event('productClicked'));
+
     };
 
     const openRecoPopup = (e, p) => {

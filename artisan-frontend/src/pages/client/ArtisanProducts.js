@@ -197,6 +197,9 @@ function ArtisanProducts() {
                                     {p.couleur && (
                                         <span className="ap-detail-tag">🎨 {p.couleur}</span>
                                     )}
+                                    {p.matiere  && (
+                                        <span className="ap-detail-tag">🧵 {p.matiere }</span>
+                                    )}
                                     {(p.hauteur || p.largeur) && (
                                         <span className="ap-detail-tag">
                                             📐 {[p.hauteur && `H: ${p.hauteur}`, p.largeur && `L: ${p.largeur}`].filter(Boolean).join(' · ')}
@@ -314,6 +317,7 @@ function ArtisanProducts() {
                             <span className="ap-detail-tag">🎨 {galleryModal.couleur || 'Non spécifié'}</span>
                             <span className="ap-detail-tag">↕ H: {galleryModal.hauteur || 'Non spécifié'}</span>
                             <span className="ap-detail-tag">↔ L: {galleryModal.largeur || 'Non spécifié'}</span>
+                            <span className="ap-detail-tag">🧵 {galleryModal.matiere  || 'Non spécifié'}</span>
                         </div>
 
                         {galleryModal.gallery && galleryModal.gallery.length > 0 ? (
