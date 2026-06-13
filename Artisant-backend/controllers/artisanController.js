@@ -1,20 +1,38 @@
 const db = require("../config/db");
 const multer = require("multer");
 const path = require("path");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+// ── Cloudinary config ──
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+// ── Cloudinary storage for artisan images ──
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => ({
+    folder: "artisans-du-maroc/artisans",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation:
+      file.fieldname === "banner_photo"
+        ? [
+            {
+              width: 1200,
+              height: 400,
+              crop: "fill",
+              gravity: "auto",
+              quality: 80,
+            },
+          ]
+        : [{ width: 400, quality: 80, crop: "limit" }],
+  }),
 });
+
+const upload = multer({ storage });
 
 exports.uploadProfilePicture = upload.fields([
   { name: "profile_picture", maxCount: 1 },
@@ -102,10 +120,10 @@ exports.updateArtisan = async (req, res) => {
     const { id } = req.params;
     const { full_name, email, city, bio, phone_number } = req.body;
 
-    const newProfilePic = req.files?.["profile_picture"]?.[0]?.filename || null;
-    const newBanner = req.files?.["banner_photo"]?.[0]?.filename || null;
+    // ── Cloudinary returns full URL in .path ──
+    const newProfilePic = req.files?.["profile_picture"]?.[0]?.path || null;
+    const newBanner = req.files?.["banner_photo"]?.[0]?.path || null;
 
-    // Build dynamic SET clause based on what was uploaded
     let sets = [
       "full_name = ?",
       "email = ?",
@@ -198,19 +216,18 @@ exports.getTopArtisansPerCity = async (req, res) => {
 
 exports.registerArtisan = async (req, res) => {
   try {
-    // 1. On récupère toutes les données envoyées par le formulaire React
     const { full_name, email, password, bio, city, phone_number } = req.body;
     let profile_picture = null;
     let banner_photo = null;
 
+    // ── Cloudinary returns full URL in .path ──
     if (req.files?.["profile_picture"]?.[0]) {
-      profile_picture = req.files["profile_picture"][0].filename;
+      profile_picture = req.files["profile_picture"][0].path;
     }
     if (req.files?.["banner_photo"]?.[0]) {
-      banner_photo = req.files["banner_photo"][0].filename;
+      banner_photo = req.files["banner_photo"][0].path;
     }
 
-    // 3. Vérifier si l'artisan existe déjà avec cet email
     const checkQuery = "SELECT * FROM artisans WHERE email = ?";
     const [existingArtisan] = await db.query(checkQuery, [email]);
 
@@ -221,7 +238,6 @@ exports.registerArtisan = async (req, res) => {
       });
     }
 
-    // 4. Insérer le nouvel artisan dans la base de données
     const insertQuery = `
             INSERT INTO artisans (full_name, email, password, bio, city, phone_number, profile_picture, banner_photo) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -238,13 +254,11 @@ exports.registerArtisan = async (req, res) => {
       banner_photo,
     ]);
 
-    // 5. Répondre au Frontend que tout s'est bien passé
     res.status(201).json({
       success: true,
       message: "Inscription réussie. Bienvenue parmi les artisans du Maroc !",
     });
   } catch (error) {
-    // En cas de problème (ex: base de données éteinte, erreur de syntaxe SQL)
     console.error(
       "Erreur critique lors de l'inscription de l'artisan :",
       error,
@@ -326,16 +340,14 @@ exports.forgotPassword = async (req, res) => {
 
     const artisan = rows[0];
 
-    // Generate 5-digit code
     const code = Math.floor(10000 + Math.random() * 90000).toString();
-    const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
 
     await db.execute(
       "UPDATE artisans SET reset_code = ?, reset_code_expires = ? WHERE id = ?",
       [code, expires, artisan.id],
     );
 
-    // Send email
     const nodemailer = require("nodemailer");
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -362,37 +374,6 @@ exports.forgotPassword = async (req, res) => {
                 </div>
             `,
     });
-
-    /*const axios = require("axios");
-    await axios.post(
-      "https://api.brevo.com/v3/smtp/email",
-      {
-        sender: {
-          name: "Artisans du Maroc",
-          email: "artisansdumarocc@gmail.com",
-        },
-        to: [{ email: artisan.email, name: artisan.full_name }],
-        subject: "Code de réinitialisation — Artisans du Maroc",
-        htmlContent: `
-                <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #eee;border-radius:12px;">
-                    <h2 style="color:#b95d2b;">Artisans du Maroc</h2>
-                    <p>Bonjour <strong>${artisan.full_name}</strong>,</p>
-                    <p>Votre code de réinitialisation de mot de passe est :</p>
-                    <div style="text-align:center;margin:24px 0;">
-                        <span style="font-size:36px;font-weight:bold;letter-spacing:12px;color:#b95d2b;">${code}</span>
-                    </div>
-                    <p style="color:#888;font-size:13px;">Ce code expire dans <strong>10 minutes</strong>.</p>
-                    <p style="color:#888;font-size:13px;">Si vous n'avez pas fait cette demande, ignorez cet email.</p>
-                </div>
-            `,
-      },
-      {
-        headers: {
-          "api-key": process.env.BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-      },
-    );*/
 
     res.json({ success: true, artisanId: artisan.id });
   } catch (err) {
