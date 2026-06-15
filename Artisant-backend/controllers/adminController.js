@@ -176,3 +176,71 @@ exports.updateArtisanStatus = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// ── Add this to adminController.js ──
+
+exports.getStats = async (req, res) => {
+  try {
+    const [[{ total_artisans }]] = await db.execute(
+      "SELECT COUNT(*) AS total_artisans FROM artisans",
+    );
+    const [[{ total_clients }]] = await db.execute(
+      "SELECT COUNT(*) AS total_clients FROM clients",
+    );
+    const [[{ total_products }]] = await db.execute(
+      "SELECT COUNT(*) AS total_products FROM products",
+    );
+    const [[{ total_visits }]] = await db.execute(
+      "SELECT COUNT(*) AS total_visits FROM product_visits",
+    );
+
+    const [[{ artisans_actif }]] = await db.execute(
+      "SELECT COUNT(*) AS artisans_actif FROM artisans WHERE status = 'actif'",
+    );
+    const [[{ artisans_en_attente }]] = await db.execute(
+      "SELECT COUNT(*) AS artisans_en_attente FROM artisans WHERE status = 'en_attente'",
+    );
+    const [[{ artisans_bloque }]] = await db.execute(
+      "SELECT COUNT(*) AS artisans_bloque FROM artisans WHERE status = 'bloque'",
+    );
+
+    // Best artisan by average rating
+    const [bestArtisanRows] = await db.execute(`
+            SELECT a.id, a.full_name, a.city,
+                   ROUND(AVG(r.stars), 1) AS average_rating
+            FROM artisans a
+            JOIN products p ON p.artisan_id = a.id
+            JOIN ratings r ON r.product_id = p.id
+            WHERE a.status = 'actif'
+            GROUP BY a.id
+            ORDER BY average_rating DESC
+            LIMIT 1
+        `);
+
+    // Best product by average rating
+    const [bestProductRows] = await db.execute(`
+            SELECT p.id, p.title,
+                   a.full_name AS artisan_name,
+                   ROUND(AVG(r.stars), 1) AS average_rating
+            FROM products p
+            JOIN artisans a ON p.artisan_id = a.id
+            JOIN ratings r ON r.product_id = p.id
+            GROUP BY p.id
+            ORDER BY average_rating DESC
+            LIMIT 1
+        `);
+
+    res.json({
+      total_artisans,
+      total_clients,
+      total_products,
+      total_visits,
+      artisans_actif,
+      artisans_en_attente,
+      artisans_bloque,
+      best_artisan: bestArtisanRows[0] || null,
+      best_product: bestProductRows[0] || null,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
