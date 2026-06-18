@@ -156,12 +156,7 @@ function ArtisanProducts() {
           <span className="ap-header-sub">MES CRÉATIONS:</span>
           <span className="ap-header-main">{artisanName.toUpperCase()}</span>
         </div>
-        <button
-          className="ap-menu-btn"
-          onClick={() => setShowFilters((v) => !v)}
-        >
-          ☰
-        </button>
+        <div style={{ width: '38px' }} />
       </header>
 
       {/* ── Section title ── */}

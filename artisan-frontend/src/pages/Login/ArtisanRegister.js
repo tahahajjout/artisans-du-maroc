@@ -102,135 +102,116 @@ function ArtisanRegister() {
         {error && <p style={{ color: "red", fontSize: "0.85rem" }}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          {/* ── Two columns ── */}
-          <div className="two-cols">
-            {/* Left */}
-            <div className="col">
-              <div className="form-group">
-                <label>Nom complet / Nom d'atelier</label>
-                <input
-                  type="text"
-                  name="full_name"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Mot de passe</label>
-                <input
-                  type="password"
-                  name="password"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Bio (Votre histoire, votre savoir-faire)</label>
-                <textarea
-                  name="bio"
-                  rows="4"
-                  onChange={handleChange}
-                ></textarea>
-              </div>
+          <div className="form-group">
+            <label>Nom complet / Nom d'atelier</label>
+            <input
+              type="text"
+              name="full_name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group half">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                onChange={handleChange}
+                required
+              />
             </div>
-
-            {/* Divider */}
-            <div className="col-divider" />
-
-            {/* Right */}
-            <div className="col">
-              <div className="form-group">
-                <label>Téléphone</label>
-                <input
-                  type="text"
-                  name="phone_number"
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  Ville <span style={{ color: "red" }}>*</span>
-                </label>
-                <select
-                  name="city"
-                  onChange={handleChange}
-                  value={formData.city}
-                  required
-                >
-                  <option value="" disabled>
-                    Sélectionnez votre ville
-                  </option>
-                  {CITIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="register-photos-row">
-                <div className="register-photo-box">
-                  <label>📷 Photo de profil</label>
-                  <div className="register-img-preview profile-preview">
-                    {profilePreview ? (
-                      <img src={profilePreview} alt="profil" />
-                    ) : (
-                      <span>Aucune image</span>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfileFile}
-                  />
-                </div>
-                <div className="register-photo-box">
-                  <label>🖼️ Photo de bannière</label>
-                  <div className="register-img-preview banner-preview">
-                    {bannerPreview ? (
-                      <img src={bannerPreview} alt="bannière" />
-                    ) : (
-                      <span>Aucune image</span>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleBannerFile}
-                  />
-                </div>
-              </div>
+            <div className="form-group half">
+              <label>Téléphone</label>
+              <input type="text" name="phone_number" onChange={handleChange} />
             </div>
           </div>
 
-          {/* ── Bottom center ── */}
-          <div className="form-bottom-center">
-            <button
-              type="button"
-              className="btn-preview-profile"
-              onClick={() => setShowPreview(true)}
+          <div className="form-group">
+            <label>Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>
+              Ville <span style={{ color: "red" }}>*</span>
+            </label>
+            <select
+              name="city"
+              onChange={handleChange}
+              value={formData.city}
+              required
             >
-              👁️ Aperçu du profil public
-            </button>
-            <button type="submit" className="auth-btn">
-              CRÉER MON COMPTE
-            </button>
-            <div className="auth-footer">
-              <Link to="/artisan-space">Déjà un compte ? Se connecter</Link>
+              <option value="" disabled>
+                Sélectionnez votre ville
+              </option>
+              {CITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Bio (Votre histoire, votre savoir-faire)</label>
+            <textarea name="bio" rows="3" onChange={handleChange}></textarea>
+          </div>
+
+          <div className="register-photos-row">
+            <div className="register-photo-box">
+              <label>📷 Photo de profil</label>
+              <div className="register-img-preview profile-preview">
+                {profilePreview ? (
+                  <img src={profilePreview} alt="profil" />
+                ) : (
+                  <span>Aucune image</span>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleProfileFile}
+              />
+            </div>
+
+            <div className="register-photo-box">
+              <label>🖼️ Photo de bannière (profil public)</label>
+              <div className="register-img-preview banner-preview">
+                {bannerPreview ? (
+                  <img src={bannerPreview} alt="bannière" />
+                ) : (
+                  <span>Aucune image</span>
+                )}
+              </div>
+              <input type="file" accept="image/*" onChange={handleBannerFile} />
             </div>
           </div>
+
+          <button
+            type="button"
+            className="btn-preview-profile"
+            onClick={() => setShowPreview(true)}
+          >
+            👁️ Aperçu du profil public
+          </button>
+
+          <button type="submit" className="auth-btn">
+            CRÉER MON COMPTE
+          </button>
         </form>
+
+        <div className="auth-footer">
+          <Link to="/artisan-space">Déjà un compte ? Se connecter</Link>
+        </div>
       </div>
 
-      {/* ── Preview Modal ── */}
       {showPreview && (
         <div className="preview-overlay" onClick={() => setShowPreview(false)}>
           <div className="preview-modal" onClick={(e) => e.stopPropagation()}>
@@ -241,6 +222,7 @@ function ArtisanRegister() {
               ✕
             </button>
             <p className="preview-label">Aperçu de votre profil public</p>
+
             <div className="prev-hero">
               <div className="prev-banner">
                 {bannerPreview ? (
@@ -257,6 +239,7 @@ function ArtisanRegister() {
                 )}
               </div>
             </div>
+
             <div className="prev-body">
               <h2>{formData.full_name || "Votre Nom"}</h2>
               <p className="prev-city">📍 {formData.city || "Votre ville"}</p>

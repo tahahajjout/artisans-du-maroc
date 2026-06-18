@@ -413,12 +413,33 @@ h2::after {
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(0, 0, 0, 0.04);
   position: relative;
-  display: block;
+  /* ── changed: flex column + full height so all cards match ── */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   cursor: pointer;
 }
 .reco-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-md);
+}
+
+/* ── reco image: show whole product, never crop, uniform look ── */
+.reco-card .artisan-img {
+  height: 260px;
+  object-fit: cover;
+  background: #faf7f2;
+  padding: 10px;
+}
+
+/* ── reco info: fill remaining space so buttons align to bottom ── */
+.reco-card .artisan-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.reco-card .reco-info-btn {
+  margin-top: auto;
 }
 
 .reco-whatsapp-btn {

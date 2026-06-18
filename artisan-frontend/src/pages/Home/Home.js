@@ -48,20 +48,16 @@ function Home() {
 
     const fetchData = async () => {
       try {
-        const catRes = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/categories`,
-        );
-        setCategories(catRes.data);
-
-        const artRes = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/top-by-city`,
-        );
-        setArtisans(artRes.data);
-
         const clientId = parsedUser ? parsedUser.id : "guest";
-        const recoRes = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/products/recommendations/${clientId}`,
-        );
+        const [catRes, artRes, recoRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_API_URL}/api/categories`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/top-by-city`),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/products/recommendations/${clientId}`,
+          ),
+        ]);
+        setCategories(catRes.data);
+        setArtisans(artRes.data);
         setRecommendations(recoRes.data.products || []);
         setRecoType(recoRes.data.type || "general");
       } catch (err) {
