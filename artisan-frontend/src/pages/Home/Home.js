@@ -335,6 +335,8 @@ function Home() {
                     className="artisan-img"
                     src={imgSrc(p.image_url)}
                     alt={p.title}
+                    onClick={(e) => openRecoPopup(e, p)}
+                    style={{ cursor: "zoom-in" }}
                     onError={(e) =>
                       (e.target.src = "https://via.placeholder.com/400")
                     }
