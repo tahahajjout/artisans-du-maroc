@@ -33,9 +33,8 @@ function Login() {
             });
             
             if (response.data.success) {
-                // Sauvegarde de l'objet utilisateur (id, name, role)
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-                // Redirection immédiate
+                localStorage.setItem('clientToken', response.data.token);
                 navigate('/');
             }
         } catch (err) {

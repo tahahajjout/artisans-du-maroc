@@ -43,9 +43,11 @@ function MyProducts() {
   }, [userId, navigate]);
 
   const handleDelete = async () => {
+    const token = localStorage.getItem("artisanToken");
     try {
       await axios.delete(
         `${process.env.REACT_APP_API_URL}/api/products/${deleteConfirm}`,
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setProducts(products.filter((p) => p.id !== deleteConfirm));
       setDeleteConfirm(null);

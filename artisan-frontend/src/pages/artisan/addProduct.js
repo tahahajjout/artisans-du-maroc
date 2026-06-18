@@ -93,11 +93,15 @@ function AddProduct() {
     galleryFiles.forEach((item) => formData.append("gallery", item.file));
 
     try {
+      const token = localStorage.getItem("artisanToken");
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/products/add`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
       if (response.status === 201) {

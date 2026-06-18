@@ -47,11 +47,11 @@ function AdminDashboard() {
       .get(`${process.env.REACT_APP_API_URL}/api/admin/artisans`, auth)
       .then((r) => setArtisans(r.data))
       .catch(handleAuthError);
-    axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/all`).then((r) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/all`, auth).then((r) => {
       setFeedbacks(r.data.feedbacks || []);
       setFeedbackAvg(r.data.average || 0);
       setFeedbackTotal(r.data.total || 0);
-    });
+    }).catch(handleAuthError);
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/admin/stats`, auth)
       .then((r) => setStats(r.data))

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const artisanController = require('../controllers/artisanController');
+const verifyArtisan = require('../middleware/verifyArtisan');
 
 router.post('/forgot-password', artisanController.forgotPassword);
 router.post('/verify-reset-code', artisanController.verifyResetCode);
@@ -15,12 +16,9 @@ router.get('/artisan/private/:id', artisanController.getArtisanById);
 router.get('/artisan/:id', artisanController.getPublicArtisan);
 router.get('/top-by-city', artisanController.getTopArtisansPerCity);
 
-router.put('/update/:id', artisanController.uploadProfilePicture, artisanController.updateArtisan);
-router.put('/artisan/:id/change-password', artisanController.changePassword);
+router.put('/update/:id', verifyArtisan, artisanController.uploadProfilePicture, artisanController.updateArtisan);
+router.put('/artisan/:id/change-password', verifyArtisan, artisanController.changePassword);
 
-
-router.delete('/artisan/:id', artisanController.deleteArtisan);
-
-
+router.delete('/artisan/:id', verifyArtisan, artisanController.deleteArtisan);
 
 module.exports = router;

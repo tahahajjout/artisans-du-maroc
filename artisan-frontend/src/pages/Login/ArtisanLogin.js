@@ -29,6 +29,7 @@ function ArtisanLogin() {
         if (response.data.success) {
             const user = response.data.user;
             localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('artisanToken', response.data.token);
 
             // Block en_attente from entering
             if (user.status === 'en_attente') {

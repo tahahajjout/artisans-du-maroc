@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { submitFeedback, getAllFeedback } = require('../controllers/feedbackController');
+const verifyAdmin = require('../middleware/verifyAdmin');
 
-// Public route — anyone can submit feedback
 router.post('/submit', submitFeedback);
-
-// Admin route — get all feedbacks
-router.get('/all', getAllFeedback);
+router.get('/all', verifyAdmin, getAllFeedback);
 
 module.exports = router;

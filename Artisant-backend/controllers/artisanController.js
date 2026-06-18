@@ -326,6 +326,7 @@ exports.search = async (req, res) => {
   }
 };
 
+// OPTION 1 — Gmail SMTP (MAIL_USER + MAIL_PASS in .env)
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
@@ -339,7 +340,6 @@ exports.forgotPassword = async (req, res) => {
         .json({ message: "Aucun compte trouvé avec cet email." });
 
     const artisan = rows[0];
-
     const code = Math.floor(10000 + Math.random() * 90000).toString();
     const expires = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -351,28 +351,23 @@ exports.forgotPassword = async (req, res) => {
     const nodemailer = require("nodemailer");
     const transporter = nodemailer.createTransport({
       service: "gmail",
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
+      auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
     });
 
     await transporter.sendMail({
-      from: '"Artisans du Maroc" <taha2000hajjout@gmail.com>',
+      from: `"Artisans du Maroc" <${process.env.MAIL_USER}>`,
       to: artisan.email,
       subject: "Code de réinitialisation — Artisans du Maroc",
-      html: `
-                <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #eee;border-radius:12px;">
-                    <h2 style="color:#b95d2b;">Artisans du Maroc</h2>
-                    <p>Bonjour <strong>${artisan.full_name}</strong>,</p>
-                    <p>Votre code de réinitialisation de mot de passe est :</p>
-                    <div style="text-align:center;margin:24px 0;">
-                        <span style="font-size:36px;font-weight:bold;letter-spacing:12px;color:#b95d2b;">${code}</span>
-                    </div>
-                    <p style="color:#888;font-size:13px;">Ce code expire dans <strong>10 minutes</strong>.</p>
-                    <p style="color:#888;font-size:13px;">Si vous n'avez pas fait cette demande, ignorez cet email.</p>
-                </div>
-            `,
+      html: `<div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #eee;border-radius:12px;">
+        <h2 style="color:#b95d2b;">Artisans du Maroc</h2>
+        <p>Bonjour <strong>${artisan.full_name}</strong>,</p>
+        <p>Votre code de réinitialisation de mot de passe est :</p>
+        <div style="text-align:center;margin:24px 0;">
+          <span style="font-size:36px;font-weight:bold;letter-spacing:12px;color:#b95d2b;">${code}</span>
+        </div>
+        <p style="color:#888;font-size:13px;">Ce code expire dans <strong>10 minutes</strong>.</p>
+        <p style="color:#888;font-size:13px;">Si vous n'avez pas fait cette demande, ignorez cet email.</p>
+      </div>`,
     });
 
     res.json({ success: true, artisanId: artisan.id });
@@ -381,6 +376,50 @@ exports.forgotPassword = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// OPTION 2 — Brevo REST API (BREVO_API_KEY in .env)
+/*exports.forgotPassword = async (req, res) => {
+   const { email } = req.body;
+   try {
+     const [rows] = await db.execute(
+      "SELECT id, full_name, email FROM artisans WHERE email = ?",
+      [email],
+    );
+    if (rows.length === 0)
+      return res.status(404).json({ message: "Aucun compte trouvé avec cet email." });
+
+    const artisan = rows[0];
+   const code = Math.floor(10000 + Math.random() * 90000).toString();
+   const expires = new Date(Date.now() + 10 * 60 * 1000);
+    await db.execute(
+       "UPDATE artisans SET reset_code = ?, reset_code_expires = ? WHERE id = ?",
+      [code, expires, artisan.id],
+    );
+
+     const axios = require("axios");
+     await axios.post("https://api.brevo.com/v3/smtp/email", {
+       sender: { name: "Artisans du Maroc", email: "artisansdumarocc@gmail.com" },
+       to: [{ email: artisan.email, name: artisan.full_name }],
+       subject: "Code de réinitialisation — Artisans du Maroc",
+       htmlContent: `<div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:32px;border:1px solid #eee;border-radius:12px;">
+         <h2 style="color:#b95d2b;">Artisans du Maroc</h2>
+         <p>Bonjour <strong>${artisan.full_name}</strong>,</p>
+         <p>Votre code de réinitialisation de mot de passe est :</p>
+         <div style="text-align:center;margin:24px 0;">
+         </div>
+         <p style="color:#888;font-size:13px;">Ce code expire dans <strong>10 minutes</strong>.</p>
+         <p style="color:#888;font-size:13px;">Si vous n'avez pas fait cette demande, ignorez cet email.</p>
+       </div>`,
+     }, {
+       headers: { "api-key": process.env.BREVO_API_KEY, "Content-Type": "application/json" },
+    });
+
+     res.json({ success: true, artisanId: artisan.id });
+   } catch (err) {
+    console.error("forgotPassword error:", err.response?.data || err.message);
+    res.status(500).json({ message: err.message });
+   }
+ };*/
 
 exports.verifyResetCode = async (req, res) => {
   const { artisanId, code } = req.body;

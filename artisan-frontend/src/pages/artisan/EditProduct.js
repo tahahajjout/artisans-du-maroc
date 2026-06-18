@@ -103,12 +103,16 @@ function EditProduct() {
     if (deletedGalleryIds.length > 0)
       data.append("deletedGalleryIds", JSON.stringify(deletedGalleryIds));
 
+    const token = localStorage.getItem("artisanToken");
     try {
       await axios.put(
         `${process.env.REACT_APP_API_URL}/api/products/${id}`,
         data,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
       alert("Produit mis à jour !");

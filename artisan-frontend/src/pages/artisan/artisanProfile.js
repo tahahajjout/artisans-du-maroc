@@ -30,7 +30,7 @@ function ArtisanProfile() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("artisanToken");
     navigate("/");
   };
 
@@ -39,15 +39,17 @@ function ArtisanProfile() {
       setDeleteError("Veuillez entrer votre mot de passe.");
       return;
     }
+    const token = localStorage.getItem("artisanToken");
     try {
       await axios.delete(
         `${process.env.REACT_APP_API_URL}/api/artisan/${artisan.id}`,
         {
           data: { password: deletePassword },
+          headers: { Authorization: `Bearer ${token}` },
         },
       );
       localStorage.removeItem("user");
-      localStorage.removeItem("token");
+      localStorage.removeItem("artisanToken");
       navigate("/");
     } catch (err) {
       setDeleteError(

@@ -117,12 +117,12 @@ function ArtisanProducts() {
     }
     setSubmitting(true);
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/products/rate`, {
-        product_id: ratingModal.id,
-        client_id: user.id,
-        stars,
-        comment,
-      });
+      const token = localStorage.getItem("clientToken");
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/products/rate`,
+        { product_id: ratingModal.id, client_id: user.id, stars, comment },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
       setRatingMsg("✅ Merci ! Votre avis a été enregistré.");
       setTimeout(() => setRatingModal(null), 1500);
     } catch {

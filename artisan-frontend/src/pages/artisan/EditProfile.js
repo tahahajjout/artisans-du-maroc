@@ -97,12 +97,14 @@ function EditProfile() {
 
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("artisanToken");
       await axios.put(
         `${process.env.REACT_APP_API_URL}/api/artisan/${user.id}/change-password`,
         {
           current_password: passwordData.current_password,
           new_password: passwordData.new_password,
         },
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setPasswordSuccess("Mot de passe modifié avec succès !");
       setPasswordData({
@@ -150,10 +152,16 @@ function EditProfile() {
       if (selectedFile) data.append("profile_picture", selectedFile);
       if (selectedBanner) data.append("banner_photo", selectedBanner);
 
+      const token = localStorage.getItem("artisanToken");
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/update/${user.id}`,
         data,
-        { headers: { "Content-Type": "multipart/form-data" } },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       if (response.data.success) {
