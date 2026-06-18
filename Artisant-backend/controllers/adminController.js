@@ -1,6 +1,8 @@
 const db = require("../config/db");
 const multer = require("multer");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || "artisans_maroc_secret_2024";
 
 exports.adminLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -11,8 +13,14 @@ exports.adminLogin = async (req, res) => {
     );
     if (!rows.length)
       return res.status(401).json({ error: "Invalid credentials" });
+
+    const token = jwt.sign({ id: rows[0].id, role: "admin" }, JWT_SECRET, {
+      expiresIn: "8h",
+    });
+
     res.json({
       success: true,
+      token,
       adminId: rows[0].id,
       username: rows[0].username,
     });

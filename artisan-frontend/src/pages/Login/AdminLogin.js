@@ -15,6 +15,7 @@ function AdminLogin() {
             const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/login`, { username, password });
             if (res.data.success) {
                 localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminToken', res.data.token);
                 navigate('/admin/dashboard');
             }
         } catch {

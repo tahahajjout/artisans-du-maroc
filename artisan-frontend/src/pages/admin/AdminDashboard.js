@@ -23,22 +23,39 @@ function AdminDashboard() {
   const canvasRef = useRef(null);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("adminToken");
+  const auth = { headers: { Authorization: `Bearer ${token}` } };
+
+  const handleAuthError = (err) => {
+    if (err.response?.status === 401 || err.response?.status === 403) {
+      localStorage.removeItem("adminLoggedIn");
+      localStorage.removeItem("adminToken");
+      navigate("/admin/login");
+    }
+  };
+
   useEffect(() => {
-    if (!localStorage.getItem("adminLoggedIn")) navigate("/admin/login");
+    if (!localStorage.getItem("adminLoggedIn") || !localStorage.getItem("adminToken")) {
+      navigate("/admin/login");
+      return;
+    }
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/admin/clients`)
-      .then((r) => setClients(r.data));
+      .get(`${process.env.REACT_APP_API_URL}/api/admin/clients`, auth)
+      .then((r) => setClients(r.data))
+      .catch(handleAuthError);
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/admin/artisans`)
-      .then((r) => setArtisans(r.data));
+      .get(`${process.env.REACT_APP_API_URL}/api/admin/artisans`, auth)
+      .then((r) => setArtisans(r.data))
+      .catch(handleAuthError);
     axios.get(`${process.env.REACT_APP_API_URL}/api/feedback/all`).then((r) => {
       setFeedbacks(r.data.feedbacks || []);
       setFeedbackAvg(r.data.average || 0);
       setFeedbackTotal(r.data.total || 0);
     });
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/admin/stats`)
-      .then((r) => setStats(r.data));
+      .get(`${process.env.REACT_APP_API_URL}/api/admin/stats`, auth)
+      .then((r) => setStats(r.data))
+      .catch(handleAuthError);
   }, [navigate]);
 
   // Draw pie chart when stats load and tab is active
@@ -137,6 +154,7 @@ function AdminDashboard() {
     try {
       await axios.delete(
         `${process.env.REACT_APP_API_URL}/api/admin/artisan/${deletePopup.id}`,
+        auth,
       );
       const phone = deletePopup.phone_number
         ? deletePopup.phone_number.replace(/\D/g, "")
@@ -158,6 +176,7 @@ function AdminDashboard() {
       await axios.put(
         `${process.env.REACT_APP_API_URL}/api/admin/artisan/${statusPopup.id}/status`,
         { status: newStatus },
+        auth,
       );
       setArtisans((prev) =>
         prev.map((a) =>
