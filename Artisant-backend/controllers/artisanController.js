@@ -3,6 +3,8 @@ const multer = require("multer");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const bcrypt = require("bcryptjs");
+const SALT_ROUNDS = 10;
 
 // ── Cloudinary config ──
 cloudinary.config({
@@ -169,16 +171,30 @@ exports.changePassword = async (req, res) => {
     if (rows.length === 0)
       return res.status(404).json({ error: "Artisan non trouvé" });
 
-    if (rows[0].password !== current_password)
+    const stored = rows[0].password;
+
+    // Try bcrypt first (accounts that already have a hash).
+    // For legacy plain-text accounts, bcrypt.compare returns false — then we fall back to === check.
+    let valid = await bcrypt.compare(current_password, stored);
+    if (!valid && current_password === stored) valid = true; // legacy plain text
+
+    if (!valid)
       return res.status(400).json({ error: "Mot de passe actuel incorrect" });
 
-    if (current_password === new_password)
+    // We can't compare new == current directly anymore because stored might be a hash.
+    // Compare the submitted new password against the stored value too.
+    const sameAsCurrent = await bcrypt.compare(new_password, stored)
+      || new_password === stored;
+    if (sameAsCurrent)
       return res
         .status(400)
         .json({ error: "Le nouveau mot de passe est identique à l'ancien" });
 
+    // Hash the new password before saving it
+    const hashedNew = await bcrypt.hash(new_password, SALT_ROUNDS);
+
     await db.execute("UPDATE artisans SET password = ? WHERE id = ?", [
-      new_password,
+      hashedNew,
       id,
     ]);
     res.json({ success: true });
@@ -238,15 +254,18 @@ exports.registerArtisan = async (req, res) => {
       });
     }
 
+    // Hash the password before saving — plain text never enters the database.
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
     const insertQuery = `
-            INSERT INTO artisans (full_name, email, password, bio, city, phone_number, profile_picture, banner_photo) 
+            INSERT INTO artisans (full_name, email, password, bio, city, phone_number, profile_picture, banner_photo)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
     await db.query(insertQuery, [
       full_name,
       email,
-      password,
+      hashedPassword, // store the hash, not the plain text
       bio,
       city,
       phone_number,
@@ -283,7 +302,12 @@ exports.deleteArtisan = async (req, res) => {
         .json({ success: false, message: "Artisan non trouvé." });
 
     const artisan = rows[0];
-    if (artisan.password !== password) {
+
+    // Same transparent migration pattern: try bcrypt first, fall back to plain text
+    let valid = await bcrypt.compare(password, artisan.password);
+    if (!valid && password === artisan.password) valid = true;
+
+    if (!valid) {
       return res
         .status(401)
         .json({ success: false, message: "Mot de passe incorrect." });
@@ -453,9 +477,12 @@ exports.verifyResetCode = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   const { artisanId, newPassword } = req.body;
   try {
+    // Hash the new password — same rule as registration and changePassword
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
     await db.execute(
       "UPDATE artisans SET password = ?, reset_code = NULL, reset_code_expires = NULL WHERE id = ?",
-      [newPassword, artisanId],
+      [hashedPassword, artisanId],
     );
     res.json({
       success: true,
